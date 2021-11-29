@@ -3,8 +3,10 @@ const mysql = require("mysql");
 const connection = mysql.createConnection({
 	// host: "127.0.0.1",
 	host: "localhost",
+	// localhost - default, можно не указывать
 	// localhost = 127.0.0.1
 	port: 3306,
+	//3306 - default, можно не указывать
 	// port: "",
 	user: "root",
 	password: "",

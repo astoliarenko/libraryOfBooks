@@ -15,7 +15,12 @@ const routes = require("./settings/routes");
 
 routes(app);
 
-app.listen(port, () => {
-	// eslint-disable-next-line no-console
-	console.log(`App listen on port ${port}`);
-});
+const start = () => {
+	try {
+		app.listen(port, () => console.log(`App listen on port ${port}`));
+	} catch(e) {
+		console.log(e);
+	}
+}
+
+start();

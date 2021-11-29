@@ -51,21 +51,21 @@ export default class AutorizationView extends JetView {
 							view: "text",
 							label: "Login",
 							name: "login",
-							invalidMessage: "Title must not be empty"
+							invalidMessage: "Login must not be empty"
 						},
 						{
 							view: "text",
 							label: "Password",
 							type: "password",
 							name: "password",
-							invalidMessage: "Ent. year between 1970 and cur."
+							invalidMessage: "Password must be 8 characters"
 						}
 					]
 				}
 			],
 			rules: {
 				login: webix.rules.isNotEmpty,
-				password: webix.rules.isNotEmpty
+				password: value => value.length === 8
 			}
 		};
 
@@ -89,9 +89,15 @@ export default class AutorizationView extends JetView {
 
 	authorizeUser() {
 		// eslint-disable-next-line no-console
+		if (!this.form.validate()) return;
+
+		// eslint-disable-next-line no-console
 		console.log("authorize...");
 
 		// const formValues = this.form.getValues();
+
+		// console.log("login=", formValues.login);
+		// console.log("password=", formValues.password);
 
 
 		// захешировать пароль
