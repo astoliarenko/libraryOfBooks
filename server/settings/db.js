@@ -20,4 +20,18 @@ connection.connect((err) => {
 	return console.log("Подключение успешно!");
 });
 
+// const query = (sqlQuery) => {
+// 	return new Promise((resolve, reject) => {
+// 		db.query(sqlQuery, (err, result, fields) => {
+// 			if(err){
+// 				reject(err);	
+// 			}
+// 			resolve({result, fields});
+// 		});
+// 	});
+// }
+
 module.exports = connection;
+// module.exports = {
+// 	query
+// }

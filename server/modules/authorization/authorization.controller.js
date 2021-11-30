@@ -1,40 +1,37 @@
+const {ROLES} = require("../../constants");
 const {scryptHash, key} = require("../../crypto/cryptoMy");
 const response = require("../../response");
 const db = require("../../settings/db");
+const util = require("util");
+const jwt = require("jsonwebtoken");
+const {SECRET} = require("../../config");
+const promisifyDbQuery = util.promisify(db.query.bind(db));
+
+const generateAccessToken = (id, roles) => {
+	const payload = {
+		id,
+		roles
+	}
+	return jwt.sign(payload, SECRET, {expiresIn: "24h"})
+	// {expiresIn: "24h"} - столько будет "жить" токен
+}
 
 class authController {
 	async registration(req, res) {
 		try {
 			const {username, password} = req.body;
+			const users = await promisifyDbQuery(`SELECT * FROM \`users\` WHERE \`login\` = '${username}'`);
 
-			// let candidate;
-			db.query(`SELECT * FROM \`users\` WHERE \`login\` = '${username}'`, (err, row, fields) => {
-				// eslint-disable-next-line no-console
-				if (err) console.log("ошибка в запросе на сущ польз", err);
-				else {
-					if (row[0]) {
-						return res.status(400).json({message: "Пользователь с таким именем уже существует"})
-					}
-					// console.log(candidate);
-					//то шо надо, те находит пользователя
-					response.status(row, res);
-				}
-			});
-			// console.log(candidate);
-			// undefined
-			// if (candidate) {
-			// 	return res.status(400).json({message: "Пользователь с таким именем уже существует"})
-			// }
+			if (users[0]) {
+				return res.status(400).json({message: "Пользователь с таким именем уже существует"})
+			}
+
 			const hashPassword = await scryptHash(password, key);
-			const defRole = 1;
-			// const sql = `INSERT INTO \`users\`(\`login\`, \`password\`, \`role_id\`) VALUES('${req.query.login}', '${hashPassword}', '${defRole}')`;
-			const sql = `INSERT INTO \`users\`(\`login\`, \`password\`, \`role_id\`) VALUES('${username}', '${hashPassword}', '${defRole}')`;
-			db.query(sql, (err, results) => {
-				// eslint-disable-next-line no-console
-				if (err) console.log("ошибка", err);
-				else response.status(results, res);
-			});
-			return res.json({message: "Пользователь успешно зарегистрирован"});
+			const defRole = ROLES.READER;
+			await promisifyDbQuery(`INSERT INTO \`users\`(\`login\`, \`password\`, \`role_id\`) VALUES('${username}', '${hashPassword}', '${defRole}')`);
+			res.status(200).json({message: "Пользователь успешно зарегистрирован"})
+			// response.status(results, res);
+
 		} catch (e) {
 			console.log(e);
 			res.status(400).json({message: "Registration error"});
@@ -43,6 +40,24 @@ class authController {
 
 	async login(req, res) {
 		try {
+			const {username, password} = req.body;
+			const user = await promisifyDbQuery(`SELECT * FROM \`users\` WHERE \`login\` = '${username}'`);
+			
+
+			if (!user[0]) {
+				return res.status(400).json({message: `Пользователь ${username} не найден`});
+			}
+
+			const hashPassword = await scryptHash(password, key);
+
+			if (hashPassword !== user[0].password) {
+				return res.status(400).json({message: "Введен неверный пароль"});
+			}
+
+			const token = generateAccessToken(user[0].id, user[0].role_id);
+
+			return res.json({token})
+
 
 		} catch (e) {
 			console.log(e);
@@ -52,11 +67,9 @@ class authController {
 
 	async getUsers(req, res) {
 		try {
-			db.query("SELECT * FROM `users`", (err, rows, fields) => {
-				// eslint-disable-next-line no-console
-				if (err) console.log(err);
-				else response.status(rows, res);
-			});
+			const users = await promisifyDbQuery("SELECT * FROM `users`");
+			res.json(users)
+			
 		} catch (e) {
 
 		}

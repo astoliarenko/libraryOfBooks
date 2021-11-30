@@ -32,3 +32,16 @@ const books = new webix.DataCollection({
 });
 
 export default books;
+
+// import constants from "../constants";
+
+// const booksCollection = new webix.DataCollection({
+// 	url: "http://localhost:3500/books/",
+// 	save: "rest->http://localhost:3500/books",
+// 	scheme: {
+// 		$init(obj) {
+// 		}
+// 	}
+// });
+
+// export default booksCollection;
