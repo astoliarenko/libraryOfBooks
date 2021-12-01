@@ -13,13 +13,8 @@ module.exports = function (roles) {
 				return res.status(403).json({message: "Нет доступа"})
 			}
 	
-			const {userRoles} = jwt.verify(token, SECRET);
-			let hasRole = false;
-			userRoles.forEach(role => {
-				if (roles.includes(role)) {
-					hasRole = true;
-				}
-			})
+			const {roles: userRoles} = jwt.verify(token, SECRET);
+			const hasRole = roles.includes(userRoles);
 
 			if (!hasRole) {
 				return res.status(403).json({message: "Нет доступа"})

@@ -1,8 +1,9 @@
 const usersController = require("../modules/users/users.repository");
 const authController = require("../modules/authorization/authorization.controller");
 const booksController = require("../modules/books/books.controller");
-const authMiddleware = require("../middleware/authMiddleware");
+// const authMiddleware = require("../middleware/authMiddleware");
 const roleMiddleware = require("../middleware/roleMiddleware");
+const constants = require("../constants");
 
 module.exports = (app) => {
 	// eslint-disable-next-line global-require
@@ -17,8 +18,7 @@ module.exports = (app) => {
 
 	// app.route("/users").get(usersController.users);
 	// app.route("/users/add").post(usersController.addNewUser);
-
-	app.route("/auth/users").get(roleMiddleware(["1", "2"]), authController.getUsers);
+	app.route("/auth/users").get(roleMiddleware([constants.ROLES.ADMIN, constants.ROLES.LIBRARIAN]), authController.getUsers);
 	// app.route("/auth/users").get(authController.getUsers);
 	app.route("/auth/registration").post(authController.registration);
 	app.route("/auth/login").post(authController.login);
