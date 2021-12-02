@@ -41,8 +41,9 @@ class authController {
 	async login(req, res) {
 		try {
 			const {username, password} = req.body;
-			const user = await promisifyDbQuery(`SELECT * FROM \`users\` WHERE \`login\` = '${username}'`);
+			console.log("USERNAME=", req.body);
 			
+			const user = await promisifyDbQuery(`SELECT * FROM \`users\` WHERE \`login\` = '${username}'`);
 
 			if (!user[0]) {
 				return res.status(400).json({message: `Пользователь ${username} не найден`});
@@ -56,10 +57,7 @@ class authController {
 
 			const token = generateAccessToken(user[0].user_id, user[0].role_id);
 
-			console.log("user_id=", user[0].user_id, "role_id=", user[0].role_id);
-
 			return res.json({token})
-
 
 		} catch (e) {
 			console.log(e);
@@ -73,7 +71,8 @@ class authController {
 			res.json(users)
 			
 		} catch (e) {
-
+			console.log(e);
+			res.status(400).json({message: "get user error"});
 		}
 	}
 }

@@ -7,6 +7,10 @@ export default class AutorizationView extends JetView {
 	config() {
 		const inputMargin = 10;
 		const formMaxWidth = 400;
+		const formMinWidth = 300;
+		const btnMinWidth = 125;
+		const checkboxTrue = "remember";
+		const checkboxFalse = "notremember";
 
 		const btnClearForm = {
 			view: "button",
@@ -23,6 +27,7 @@ export default class AutorizationView extends JetView {
 
 		const btnRegisterNewUser = {
 			view: "button",
+			minWidth: btnMinWidth,
 			label: "Register now",
 			css: "webix_primary",
 			click: () => this.window.showWindow()
@@ -34,14 +39,15 @@ export default class AutorizationView extends JetView {
 			// localId: ,
 			label: "Remember",
 			name: "State",
-			checkValue: "Close",
-			uncheckValue: "Open"
+			checkValue: checkboxTrue,
+			uncheckValue: checkboxFalse
 		};
 
 		const form = {
 			view: "form",
 			localId: constants.AUTHORIZATION_VIEW.VIEW_IDS.FORM_ID,
 			maxWidth: formMaxWidth,
+			minWidth: formMinWidth,
 			elements: [
 				{view: "template", template: "Authorization", type: "section"},
 				{
@@ -58,14 +64,20 @@ export default class AutorizationView extends JetView {
 							label: "Password",
 							type: "password",
 							name: "password",
-							invalidMessage: "Password must be 8 characters"
+							invalidMessage: "Password must be 4-8 characters"
 						}
 					]
-				}
+				},
+				{cols: [btnLogIn, {}, btnClearForm]},
+				checkbox,
+				{cols: [{}, btnRegisterNewUser, {}]},
 			],
 			rules: {
 				login: webix.rules.isNotEmpty,
-				password: value => value.length === 8
+				password: value => value.length >= 4 && value.length <= 8
+			},
+			on: {
+				onSubmit: () => this.authorizeUser()
 			}
 		};
 
@@ -75,12 +87,10 @@ export default class AutorizationView extends JetView {
 				{
 					rows: [
 						form,
-						{cols: [btnLogIn, {}, btnClearForm]},
-						checkbox,
-						{cols: [{}, btnRegisterNewUser, {}]},
 						{}
 					]
-				}
+				},
+				{}
 			]
 		};
 
@@ -94,19 +104,28 @@ export default class AutorizationView extends JetView {
 		// eslint-disable-next-line no-console
 		console.log("authorize...");
 
-		// const formValues = this.form.getValues();
+		const formValues = this.form.getValues();
+		console.log("state=", formValues.State);
+		const data = {username: formValues.login, password: formValues.password};
 
-		// console.log("login=", formValues.login);
-		// console.log("password=", formValues.password);
-
-
-		// захешировать пароль
-		// проверить логин и пароль с данными в бд, если такие существуют то получить id пользователя
-		// и открыть ЕМУ доступ в зависимости от его роли
-		// в ином случае написать что логин или пароль неверны и очистить инпут пароля
-
-		// const viewName = user;
-		// this.show(`${viewName}?id=${id}`);
+		fetch('http://localhost:3500/auth/login', {
+			method: 'POST',
+			// mode: 'no-cors', // no-cors, *cors, same-origin
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(data) // body data type must match "Content-Type" header
+		})
+			.then((response) => response.json())
+			.then((token) => {
+				if (formValues.State === "remember") {
+					//сохранить токен в localstorage
+					localStorage.setItem("token", token);
+					console.log("TOKEN=", token);
+					console.log("TOKEN was saved=", localStorage.getItem("token"));
+					console.log("TOKEN was saved=", localStorage["token"]);
+				}
+			});
 	}
 
 	clearForm() {

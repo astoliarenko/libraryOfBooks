@@ -14,8 +14,6 @@ module.exports = (app) => {
 	// для пути маршрута. Поскольку путь указан в одном расположении, удобно создавать
 	// модульные маршруты, чтобы минимизировать избыточность и количество опечаток
 
-	// app.route("/").get(indexController.index);
-
 	// app.route("/users").get(usersController.users);
 	// app.route("/users/add").post(usersController.addNewUser);
 	app.route("/auth/users").get(roleMiddleware([constants.ROLES.ADMIN, constants.ROLES.LIBRARIAN]), authController.getUsers);
