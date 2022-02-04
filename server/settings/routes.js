@@ -1,25 +1,21 @@
-const usersController = require("../modules/users/users.repository");
+// const usersController = require("../modules/users/users.repository");
 const authController = require("../modules/authorization/authorization.controller");
 const booksController = require("../modules/books/books.controller");
 // const authMiddleware = require("../middleware/authMiddleware");
 const roleMiddleware = require("../middleware/roleMiddleware");
-const constants = require("../constants");
+const { DB } = require("../constants");
 
 module.exports = (app) => {
-	// eslint-disable-next-line global-require
-	// const indexController = require("../controller/indexController");
-	// eslint-disable-next-line global-require
-
 	// Метод app.route() позволяет создавать обработчики маршрутов, образующие цепочки,
 	// для пути маршрута. Поскольку путь указан в одном расположении, удобно создавать
 	// модульные маршруты, чтобы минимизировать избыточность и количество опечаток
 
-	// app.route("/users").get(usersController.users);
-	// app.route("/users/add").post(usersController.addNewUser);
-	app.route("/auth/users").get(roleMiddleware([constants.ROLES.ADMIN, constants.ROLES.LIBRARIAN]), authController.getUsers);
-	// app.route("/auth/users").get(authController.getUsers);
+	app.route("/auth/user").post(authController.getUserFromToken);
+	app.route("/auth/users").get(
+		roleMiddleware([DB.USERS.ROLES.ADMIN, DB.USERS.ROLES.LIBRARIAN]),
+		authController.getUsers
+	);
 	app.route("/auth/registration").post(authController.registration);
 	app.route("/auth/login").post(authController.login);
-
 	app.route("/books/").get(booksController.getBooks);
 };

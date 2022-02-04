@@ -1,7 +1,20 @@
 module.exports = {
-	ROLES: {
-		READER: 3,
-		LIBRARIAN: 2,
-		ADMIN: 1
-	}
-}
+	DB: {
+		USERS: {
+			NAME: "users",
+			FIELDS: {
+				ROLE_ID: "role_id",
+				PASSWORD: "password",
+				LOGIN: "login",
+			},
+			ROLES: {
+				READER: 3,
+				LIBRARIAN: 2,
+				ADMIN: 1,
+			},
+		},
+		BOOKS: {
+			NAME: "books",
+		},
+	},
+};

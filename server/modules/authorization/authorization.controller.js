@@ -1,78 +1,109 @@
-const {ROLES} = require("../../constants");
-const {scryptHash, key} = require("../../crypto/cryptoMy");
+const { DB } = require("../../constants");
+const { scryptHash, key } = require("../../crypto/cryptoMy");
 const response = require("../../response");
 const db = require("../../settings/db");
 const util = require("util");
 const jwt = require("jsonwebtoken");
-const {SECRET} = require("../../config");
+const { SECRET } = require("../../config");
 const promisifyDbQuery = util.promisify(db.query.bind(db));
 
 const generateAccessToken = (id, roles) => {
 	const payload = {
 		id,
-		roles
-	}
-	return jwt.sign(payload, SECRET, {expiresIn: "24h"})
+		roles,
+	};
+	return jwt.sign(payload, SECRET, { expiresIn: "24h" });
 	// {expiresIn: "24h"} - столько будет "жить" токен
-}
+};
 
 class authController {
 	async registration(req, res) {
 		try {
-			const {username, password} = req.body;
-			const users = await promisifyDbQuery(`SELECT * FROM \`users\` WHERE \`login\` = '${username}'`);
+			const { username, password } = req.body;
+			const users = await promisifyDbQuery(
+				`SELECT * FROM \`${DB.USERS.NAME}\` WHERE \`${DB.USERS.FIELDS.LOGIN}\` = '${username}'`
+			);
 
 			if (users[0]) {
-				return res.status(400).json({message: "Пользователь с таким именем уже существует"})
+				return res.status(400).json({
+					message: "Пользователь с таким именем уже существует",
+				});
 			}
 
 			const hashPassword = await scryptHash(password, key);
-			const defRole = ROLES.READER;
-			await promisifyDbQuery(`INSERT INTO \`users\`(\`login\`, \`password\`, \`role_id\`) VALUES('${username}', '${hashPassword}', '${defRole}')`);
-			res.status(200).json({message: "Пользователь успешно зарегистрирован"})
+			const defRole = DB.USERS.ROLES.READER;
+			await promisifyDbQuery(
+				`INSERT INTO \`${DB.USERS.NAME}\`(\`${DB.USERS.FIELDS.LOGIN}\`, \`${DB.USERS.FIELDS.PASSWORD}\`, 
+				\`${DB.USERS.FIELDS.ROLE_ID}\`) VALUES('${username}', '${hashPassword}', '${defRole}')`
+			);
+			res.status(200).json({
+				message: "Пользователь успешно зарегистрирован",
+			});
 			// response.status(results, res);
-
 		} catch (e) {
 			console.log(e);
-			res.status(400).json({message: "Registration error"});
+			res.status(400).json({
+				message: "Registration error",
+			});
 		}
 	}
 
 	async login(req, res) {
 		try {
-			const {username, password} = req.body;
+			const { username, password } = req.body;
+			// show username and passw
 			console.log("USERNAME=", req.body);
-			
-			const user = await promisifyDbQuery(`SELECT * FROM \`users\` WHERE \`login\` = '${username}'`);
+
+			const user = await promisifyDbQuery(
+				`SELECT * FROM \`${DB.USERS.NAME}\` WHERE \`${DB.USERS.FIELDS.LOGIN}\` = '${username}'`
+			);
 
 			if (!user[0]) {
-				return res.status(400).json({message: `Пользователь ${username} не найден`});
+				return res.status(400).json({
+					message: `Пользователь ${username} не найден`,
+				});
 			}
 
 			const hashPassword = await scryptHash(password, key);
 
 			if (hashPassword !== user[0].password) {
-				return res.status(400).json({message: "Введен неверный пароль"});
+				return res.status(400).json({ message: "Введен неверный пароль" });
 			}
 
 			const token = generateAccessToken(user[0].user_id, user[0].role_id);
 
-			return res.json({token})
-
+			return res.json({ token });
 		} catch (e) {
 			console.log(e);
-			res.status(400).json({message: "Login error"});
+			res.status(400).json({ message: "Login error" });
 		}
 	}
 
 	async getUsers(req, res) {
 		try {
-			const users = await promisifyDbQuery("SELECT * FROM `users`");
-			res.json(users)
-			
+			const users = await promisifyDbQuery(
+				`SELECT * FROM \`${DB.USERS.NAME}\``
+			);
+			res.json(users);
 		} catch (e) {
 			console.log(e);
-			res.status(400).json({message: "get user error"});
+			res.status(400).json({
+				message: "get user error",
+			});
+		}
+	}
+
+	async getUserFromToken(req, res) {
+		try {
+			const { token } = req.body;
+			const decodedData = jwt.verify(token, SECRET);
+
+			res.json(decodedData);
+		} catch (e) {
+			console.log(e);
+			res.status(400).json({
+				message: "get user from token error",
+			});
 		}
 	}
 }

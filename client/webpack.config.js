@@ -10,35 +10,35 @@ module.exports = function (env) {
 	let standalone = !!(env && env.standalone === "true");
 
 	let babelSettings = {
-		extends: path.join(__dirname, "/.babelrc")
+		extends: path.join(__dirname, "/.babelrc"),
 	};
 
 	let config = {
 		mode: production ? "production" : "development",
 		entry: {
-			myapp: "./sources/myapp.js"
+			myapp: "./sources/myapp.js",
 		},
 		output: {
 			path: path.join(__dirname, "codebase"),
 			publicPath: "/codebase/",
 			filename: "[name].js",
-			chunkFilename: "[name].bundle.js"
+			chunkFilename: "[name].bundle.js",
 		},
 		module: {
 			rules: [
 				{
 					test: /\.js$/,
-					use: `babel-loader?${JSON.stringify(babelSettings)}`
+					use: `babel-loader?${JSON.stringify(babelSettings)}`,
 				},
 				{
 					test: /\.(svg|png|jpg|gif)$/,
-					use: "url-loader?limit=25000"
+					use: "url-loader?limit=25000",
 				},
 				{
 					test: /\.(less|css)$/,
-					use: [MiniCssExtractPlugin.loader, "css-loader", "less-loader"]
-				}
-			]
+					use: [MiniCssExtractPlugin.loader, "css-loader", "less-loader"],
+				},
+			],
 		},
 		stats: "minimal",
 		resolve: {
@@ -46,23 +46,23 @@ module.exports = function (env) {
 			modules: ["./sources", "node_modules"],
 			alias: {
 				"jet-views": path.resolve(__dirname, "sources/views"),
-				"jet-locales": path.resolve(__dirname, "sources/locales")
-			}
+				"jet-locales": path.resolve(__dirname, "sources/locales"),
+			},
 		},
 		plugins: [
 			new MiniCssExtractPlugin({
-				filename: "[name].css"
+				filename: "[name].css",
 			}),
 			new webpack.DefinePlugin({
 				VERSION: `"${pack.version}"`,
 				APPNAME: `"${pack.name}"`,
 				PRODUCTION: production,
-				BUILD_AS_MODULE: asmodule || standalone
-			})
+				BUILD_AS_MODULE: asmodule || standalone,
+			}),
 		],
 		devServer: {
-			stats: "errors-only"
-		}
+			stats: "errors-only",
+		},
 	};
 
 	if (!production) {
