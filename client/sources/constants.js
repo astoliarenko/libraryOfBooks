@@ -1,38 +1,33 @@
 export default {
 	AUTHORIZATION_VIEW: {
 		VIEW_IDS: {
-			FORM_ID: "autorizationFormId"
+			FORM_ID: "autorizationFormId",
 		},
 		REGISTER: {
 			REGISTER_WINDOW_ID: "registerWindowId",
 			FORM_ID: "registerFormId",
 			HEADER_ID: "registerHeaderId",
-			WINDOW_ID: "registerWindowId"
-		}
+			WINDOW_ID: "registerWindowId",
+		},
 	},
 	USERS_VIEW: {
 		VIEW_IDS: {
-			FORM_ID: "autorizationFormId"
-		}
+			FORM_ID: "autorizationFormId",
+		},
 	},
-
 	ADMINS_VIEW: {
-		VIEW_IDS: {
-
-		}
+		VIEW_IDS: {},
 	},
 	LIBRARIANS_VIEW: {
-		VIEW_IDS: {
-
-		}
+		VIEW_IDS: {},
 	},
 	EVENTS: {
 		FILTER_ACTIVITIESTABLE: "filterActivitiesTable",
 		SELECT_CONTACT: "selectContact",
-		GET_SELECTED_TAB: "getSelectedTab"
+		GET_SELECTED_TAB: "getSelectedTab",
 	},
 	DATE_FORMAT: "%Y-%m-%d",
 	TIME_FORMAT: "%H:%i",
 	DATE_SERVER_FORMAT: "%Y-%m-%d %H:%i",
-	YEAR_FORMAT: "%Y"
+	YEAR_FORMAT: "%Y",
 };
