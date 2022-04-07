@@ -9,8 +9,8 @@ export default class AutorizationView extends JetView {
 		const formMaxWidth = 400;
 		const formMinWidth = 300;
 		const btnMinWidth = 125;
-		const checkboxTrue = "remember";
-		const checkboxFalse = "notremember";
+		const checkboxTrue = true;
+		const checkboxFalse = false;
 
 		const btnClearForm = {
 			view: "button",
@@ -94,49 +94,62 @@ export default class AutorizationView extends JetView {
 		return ui;
 	}
 
-	authorizeUser() {
-		// eslint-disable-next-line no-console
-		if (!this.form.validate()) return;
+	$$form() {
+		return this.$$(constants.AUTHORIZATION_VIEW.VIEW_IDS.FORM_ID);
+	}
 
-		// eslint-disable-next-line no-console
+	authorizeUser() {
+		const form = this.$$form();
+
+		const user = this.app.getService("user");
+
+		debugger;
+
+		if (!form.validate()) return;
+
 		console.log("authorize...");
 
-		const formValues = this.form.getValues();
-		console.log("state=", formValues.State);
+		const formValues = form.getValues();
+
+		this.rememberCredits = formValues.State;
+
 		const data = {
 			username: formValues.login,
 			password: formValues.password,
 		};
 
-		fetch("http://localhost:3500/auth/login", {
-			method: "POST",
-			// mode: 'no-cors', // no-cors, *cors, same-origin
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(data), // body data type must match "Content-Type" header
-		})
-			.then((response) => response.json())
-			.then(({ token }) => {
-				console.log("token was saved");
-				// нужно достать роль из токена чтобы открыть какое-то вью
-				debugger;
-				if (formValues.State === "remember") {
-					//сохранить токен в localstorage
-					localStorage.setItem("token", token);
-					console.log("token was saved");
-				}
-			});
+		debugger;
+
+		user.login(data.username, data.password)
+			.catch(function(e) {
+			console.log(e);
+			// show validation
+
+			// webix.html.removeCss(ui.$view, "invalid_login");
+			// form.elements.pass.focus();
+			// webix.delay(function(){
+			// 	webix.html.addCss(ui.$view, "invalid_login");
+			// });
+		});
+
 	}
 
 	clearForm() {
-		this.form.clear();
-		this.form.clearValidation();
-		// this.getRoot().hide();
+		const form = this.$$form();
+
+		form.clear();
+		form.clearValidation();
 	}
 
 	init() {
-		this.form = this.$$(constants.AUTHORIZATION_VIEW.VIEW_IDS.FORM_ID);
 		this.window = this.ui(RegisterWindowView);
+
+		this.on(this.app, "app:user:login", (res) => {
+			console.log("token - ", res.token);
+
+			if (this.rememberCredits) localStorage.setItem("token", res.token);
+
+			this.window.hideWindow();
+		});
 	}
 }
