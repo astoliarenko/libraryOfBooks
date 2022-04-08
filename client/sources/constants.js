@@ -26,6 +26,9 @@ export default {
 		SELECT_CONTACT: "selectContact",
 		GET_SELECTED_TAB: "getSelectedTab",
 	},
+	URLs: {
+		SERVER: "http://localhost:3500/"
+	},
 	DATE_FORMAT: "%Y-%m-%d",
 	TIME_FORMAT: "%H:%i",
 	DATE_SERVER_FORMAT: "%Y-%m-%d %H:%i",
