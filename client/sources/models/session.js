@@ -1,15 +1,12 @@
-const serverUrl = "http://localhost:3500/";
+import constants from "../constants";
 
 function status() {
-	return webix.ajax().post(`${serverUrl}auth/status`)
+	return webix.ajax().post(`${constants.URLs.SERVER}auth/status`)
 		.then(res => res.json());
 }
 
-function login(user, pass) {
-	// return webix.ajax().post(`${serverUrl}auth/login`, {user, pass})
-	// 	.then(res => res.json());
-
-	return	fetch(`${serverUrl}auth/login`, {
+function login(user, pass, isRemember) {
+	return	fetch(`${constants.URLs.SERVER}auth/login`, {
 			method: "POST",
 			// mode: 'no-cors', // no-cors, *cors, same-origin
 			headers: {
@@ -21,7 +18,7 @@ function login(user, pass) {
 }
 
 function logout() {
-	return webix.ajax().post(`${serverUrl}auth/logout`)
+	return webix.ajax().post(`${constants.URLs.SERVER}auth/logout`)
 		.then(res => res.json());
 }
 
