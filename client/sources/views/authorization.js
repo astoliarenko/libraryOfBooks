@@ -103,33 +103,22 @@ export default class AutorizationView extends JetView {
 
 		const user = this.app.getService("user");
 
-		debugger;
-
 		if (!form.validate()) return;
 
 		console.log("authorize...");
 
 		const formValues = form.getValues();
 
-		this.rememberCredits = formValues.State;
+		this.isRememberCredits = formValues.State;
 
 		const data = {
 			username: formValues.login,
 			password: formValues.password,
 		};
 
-		debugger;
-
-		user.login(data.username, data.password)
+		user.login(data.username, data.password, this.isRememberCredits)
 			.catch(function(e) {
 			console.log(e);
-			// show validation
-
-			// webix.html.removeCss(ui.$view, "invalid_login");
-			// form.elements.pass.focus();
-			// webix.delay(function(){
-			// 	webix.html.addCss(ui.$view, "invalid_login");
-			// });
 		});
 
 	}
@@ -145,11 +134,12 @@ export default class AutorizationView extends JetView {
 		this.window = this.ui(RegisterWindowView);
 
 		this.on(this.app, "app:user:login", (res) => {
-			console.log("token - ", res.token);
+			console.log("token - ", res);
 
-			if (this.rememberCredits) localStorage.setItem("token", res.token);
+			// localStorage.setItem("token", res.token);
+			console.log("role - ", res.roleId, "userName:", res.userName);
 
-			this.window.hideWindow();
+			// this.show(/)
 		});
 	}
 }

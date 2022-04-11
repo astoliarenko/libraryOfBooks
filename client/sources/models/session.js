@@ -12,7 +12,7 @@ function login(user, pass, isRemember) {
 			headers: {
 				"Content-Type": "application/json",
 			},
-			body: JSON.stringify({username: user, password: pass})
+			body: JSON.stringify({username: user, password: pass, isRemember})
 		})
 			.then((response) => response.json());
 }
