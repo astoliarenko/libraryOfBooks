@@ -1,6 +1,7 @@
-import { JetView } from "webix-jet";
+import {JetView} from "webix-jet";
 
 import constants from "../constants";
+import rolesData from "../data/rolesData";
 import RegisterWindowView from "./authorization/registerWindow";
 
 export default class AutorizationView extends JetView {
@@ -15,14 +16,14 @@ export default class AutorizationView extends JetView {
 		const btnClearForm = {
 			view: "button",
 			label: "Clear",
-			click: () => this.clearForm(),
+			click: () => this.clearForm()
 		};
 
 		const btnLogIn = {
 			view: "button",
 			label: "Log in",
 			css: "webix_primary",
-			click: () => this.authorizeUser(),
+			click: () => this.authorizeUser()
 		};
 
 		const btnRegisterNewUser = {
@@ -30,7 +31,7 @@ export default class AutorizationView extends JetView {
 			minWidth: btnMinWidth,
 			label: "Register now",
 			css: "webix_primary",
-			click: () => this.window.showWindow(),
+			click: () => this.window.showWindow()
 		};
 
 		const checkbox = {
@@ -40,7 +41,7 @@ export default class AutorizationView extends JetView {
 			label: "Remember",
 			name: "State",
 			checkValue: checkboxTrue,
-			uncheckValue: checkboxFalse,
+			uncheckValue: checkboxFalse
 		};
 
 		const form = {
@@ -49,7 +50,7 @@ export default class AutorizationView extends JetView {
 			maxWidth: formMaxWidth,
 			minWidth: formMinWidth,
 			elements: [
-				{ view: "template", template: "Authorization", type: "section" },
+				{view: "template", template: "Authorization", type: "section"},
 				{
 					margin: inputMargin,
 					rows: [
@@ -57,38 +58,38 @@ export default class AutorizationView extends JetView {
 							view: "text",
 							label: "Login",
 							name: "login",
-							invalidMessage: "Login must not be empty",
+							invalidMessage: "Login must not be empty"
 						},
 						{
 							view: "text",
 							label: "Password",
 							type: "password",
 							name: "password",
-							invalidMessage: "Password must be 4-8 characters",
-						},
-					],
+							invalidMessage: "Password must be 4-8 characters"
+						}
+					]
 				},
-				{ cols: [btnLogIn, {}, btnClearForm] },
+				{cols: [btnLogIn, {}, btnClearForm]},
 				checkbox,
-				{ cols: [{}, btnRegisterNewUser, {}] },
+				{cols: [{}, btnRegisterNewUser, {}]}
 			],
 			rules: {
 				login: webix.rules.isNotEmpty,
-				password: (value) => value.length >= 4 && value.length <= 8,
+				password: value => value.length >= 4 && value.length <= 8
 			},
 			on: {
-				onSubmit: () => this.authorizeUser(),
-			},
+				onSubmit: () => this.authorizeUser()
+			}
 		};
 
 		const ui = {
 			cols: [
 				{},
 				{
-					rows: [form, {}],
+					rows: [form, {}]
 				},
-				{},
-			],
+				{}
+			]
 		};
 
 		return ui;
@@ -105,22 +106,20 @@ export default class AutorizationView extends JetView {
 
 		if (!form.validate()) return;
 
-		console.log("authorize...");
-
 		const formValues = form.getValues();
 
 		this.isRememberCredits = formValues.State;
 
 		const data = {
 			username: formValues.login,
-			password: formValues.password,
+			password: formValues.password
 		};
 
 		user.login(data.username, data.password, this.isRememberCredits)
-			.catch(function(e) {
-			console.log(e);
-		});
-
+			.catch((e) => {
+				// eslint-disable-next-line no-console
+				console.log(e);
+			});
 	}
 
 	clearForm() {
@@ -133,13 +132,20 @@ export default class AutorizationView extends JetView {
 	init() {
 		this.window = this.ui(RegisterWindowView);
 
-		this.on(this.app, "app:user:login", (res) => {
-			console.log("token - ", res);
+		this.on(this.app, "app:user:login", ({roleId, userName}) => {
+			document.cookie = `user=${userName}`;
 
-			// localStorage.setItem("token", res.token);
-			console.log("role - ", res.roleId, "userName:", res.userName);
-
-			// this.show(/)
+			switch (roleId) {
+				case 1:
+					this.show(rolesData["1"]);
+					break;
+				case 2:
+					this.show(rolesData["3"]);
+					break;
+				default:
+					this.show(rolesData["2"]);
+					break;
+			}
 		});
 	}
 }

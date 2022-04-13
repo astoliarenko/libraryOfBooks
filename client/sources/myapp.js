@@ -1,5 +1,6 @@
-import { JetApp, EmptyRouter, HashRouter } from "webix-jet";
-import { User } from "./customPlugins/User";
+import {JetApp, EmptyRouter, HashRouter} from "webix-jet";
+
+import {User} from "./customPlugins/User";
 import "./styles/app.css";
 import session from "./models/session";
 
@@ -10,15 +11,15 @@ export default class MyApp extends JetApp {
 			version: VERSION,
 			router: BUILD_AS_MODULE ? EmptyRouter : HashRouter,
 			debug: !PRODUCTION,
-			start: "/authorization",
+			start: "/authorization"
 		};
 
-		super({ ...defaults, ...config });
+		super({...defaults, ...config});
 
 		this.use(
 			User,
 			{
-				model : session,
+				model: session,
 				login: "/authorization"
 			}
 		);
@@ -30,7 +31,7 @@ if (!BUILD_AS_MODULE) {
 	// validate token (and handle response)
 
 	webix.ready(() => {
-		new MyApp().render()
+		new MyApp().render();
 		// webix.debug({events: true});
 	});
 }
