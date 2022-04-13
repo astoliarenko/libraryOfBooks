@@ -50,9 +50,9 @@ class authController {
 
 	async login(req, res) {
 		try {
-			const { username, password } = req.body;
-			// show username and passw
-			console.log("USERNAME=", req.body);
+			const { username, password, isRemember } = req.body;
+			// show username and isRemember
+			console.log("isRemember - ", isRemember, "USERNAME=", req.body);
 
 			const user = await promisifyDbQuery(
 				`SELECT * FROM \`${DB.USERS.NAME}\` WHERE \`${DB.USERS.FIELDS.LOGIN}\` = '${username}'`
@@ -72,7 +72,17 @@ class authController {
 
 			const token = generateAccessToken(user[0].user_id, user[0].role_id);
 
-			return res.json({ token });
+			res.cookie(
+				"access_token",
+				token,
+				isRemember ? {
+					maxAge: 3600000 * 8,
+					// 8 hours
+					// secure: false,
+					// httpOnly: true
+				} : {});
+
+			return res.json({ userName: `${user[0].firstName} ${user[0].secondName}`, roleId: user[0].role_id});
 		} catch (e) {
 			console.log(e);
 			res.status(400).json({ message: "Login error" });
@@ -96,7 +106,20 @@ class authController {
 	async getUserFromToken(req, res) {
 		try {
 			const { token } = req.body;
+
+			// const token = res.headers.cookie
 			const decodedData = jwt.verify(token, SECRET);
+
+			// need to get firstName and lastName from users table
+			// const user = await promisifyDbQuery(
+			// 	`SELECT * FROM \`${DB.USERS.NAME}\` WHERE \`${DB.USERS.FIELDS.LOGIN}\` = '${username}'`
+			// );
+
+			// if (!user[0]) {
+			// 	return res.status(400).json({
+			// 		message: `Пользователь ${username} не найден`,
+			// 	});
+			// }
 
 			res.json(decodedData);
 		} catch (e) {
