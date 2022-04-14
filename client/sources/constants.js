@@ -32,5 +32,12 @@ export default {
 	DATE_FORMAT: "%Y-%m-%d",
 	TIME_FORMAT: "%H:%i",
 	DATE_SERVER_FORMAT: "%Y-%m-%d %H:%i",
-	YEAR_FORMAT: "%Y"
+	YEAR_FORMAT: "%Y",
+	IDs: {
+		SIDEBAR: "sidebarId",
+		HEADER: "mainHeaderId"
+	},
+	COOKIE_NAMES: {
+		USER: "user"
+	}
 };

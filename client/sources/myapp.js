@@ -1,6 +1,6 @@
 import {JetApp, EmptyRouter, HashRouter} from "webix-jet";
 
-import {User} from "./customPlugins/User";
+import User from "./customPlugins/User";
 import "./styles/app.css";
 import session from "./models/session";
 
