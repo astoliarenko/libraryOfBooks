@@ -16,12 +16,48 @@ export default class OrderBookView extends JetView {
 				{id: booksColumns.pages, header: "Pages", width: 100, sort: "int"}
 			],
 			data: booksCollection,
-			select: true
+			select: true,
+			on: {
+				onAfterSelect: (data) => {
+					this.$$("fullInfoId").parse(booksCollection.getItem(data.id));
+				}
+			}
 		};
 
-		const dt = new DatatableView(this.app, dtConfig);
+		this.dt = new DatatableView(this.app, dtConfig);
 
-		const searchInput = {height: 30};
+		const searchInput = {
+			view: "search",
+			placeholder: "Search..",
+			width: 300,
+			height: 30
+		};
+
+		const fullInfoTemplate = {
+			css: "full-book-info",
+			view: "template",
+			localId: "fullInfoId",
+			width: 200,
+			template: (data) => {
+				const html = `
+					<div class="books-info">
+						<div class="books-info__header">${data[booksColumns.title]}</div>
+						<div class="books-info__left-column">
+							<span>Author: ${data[booksColumns.author]}</span>
+							<span>Genres: ${data[booksColumns.genres]}</span>
+							<span>Publishing house: ${data[booksColumns.publishing_house]}</span>
+							<span>Coutry of publication: ${data[booksColumns.country_of_publication]}</span>
+							<span>Year of publishing: ${data[booksColumns.yearOfPublishing]}</span>
+						</div>
+						<div class="books-info__right-column">
+							<img src="sources/img/witcherPicture.jpg" alt="book">
+						</div>
+					</div>
+				`;
+
+				return html;
+			}
+		};
 
 		const ui = {
 			type: "clean",
@@ -32,11 +68,21 @@ export default class OrderBookView extends JetView {
 				},
 				{
 					type: "clean",
-					cols: [dt, {width: 200}]
+					cols: [this.dt, fullInfoTemplate]
 				}
 			]
 		};
 
 		return ui;
+	}
+
+	ready() {
+		booksCollection.waitData.then(() => {
+			const id = booksCollection.getFirstId();
+
+			if (id) {
+				this.dt.$$datatable().select(id);
+			}
+		});
 	}
 }

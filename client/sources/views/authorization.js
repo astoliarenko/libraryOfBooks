@@ -31,7 +31,7 @@ export default class AutorizationView extends JetView {
 			minWidth: btnMinWidth,
 			label: "Register now",
 			css: "webix_primary",
-			click: () => this.window.showWindow()
+			click: () => this.registrationWindow.showWindow()
 		};
 
 		const checkbox = {
@@ -130,7 +130,7 @@ export default class AutorizationView extends JetView {
 	}
 
 	init() {
-		this.window = this.ui(RegisterWindowView);
+		this.registrationWindow = this.ui(RegisterWindowView);
 
 		this.on(this.app, "app:user:login", ({roleId, userName}) => {
 			document.cookie = `user=${userName}`;

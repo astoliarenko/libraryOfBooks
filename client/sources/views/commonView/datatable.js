@@ -34,8 +34,8 @@ export default class DatatableView extends JetView {
 			css: "custom-datatable",
 			view: "datatable",
 			scrollX: false,
-			rowHeight: 70,
-			headerRowHeight: 70,
+			rowHeight: 40,
+			headerRowHeight: 50,
 			borderless: true,
 			pager: DT_PAGER_ID,
 			...this.dtConfig
