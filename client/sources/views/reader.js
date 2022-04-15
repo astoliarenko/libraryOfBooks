@@ -19,11 +19,12 @@ export default class ReaderView extends JetView {
 		const sidebarConfig = {
 			listMenu: {
 				data: [
-					{id: "orderBook", value: "Order book", action: ""},
-					{id: "cancelOrder", value: "Cancel order"},
-					{id: "books", value: "Books"},
-					{id: "profile", value: "Profile"}
-				]
+					{id: "orderBook", value: "Order book", url: "orderBook"},
+					{id: "cancelOrder", value: "Cancel order", url: "cancelOrder"},
+					{id: "books", value: "Books", url: "books"},
+					{id: "profile", value: "Profile", url: "profile"}
+				],
+				folderName: "reader"
 			}
 		};
 

@@ -35,7 +35,8 @@ export default {
 	YEAR_FORMAT: "%Y",
 	IDs: {
 		SIDEBAR: "sidebarId",
-		HEADER: "mainHeaderId"
+		HEADER: "mainHeaderId",
+		DATATABLE: "commonDatatableId"
 	},
 	COOKIE_NAMES: {
 		USER: "user"

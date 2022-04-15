@@ -6,6 +6,7 @@ export default class SidebarView extends JetView {
 	constructor(app, config) {
 		super(app);
 		this.data = config.listMenu.data;
+		this.folderName = config.listMenu.folderName;
 	}
 
 	config() {
@@ -20,7 +21,7 @@ export default class SidebarView extends JetView {
 			on: {
 				onAfterSelect: (id) => {
 					if (id) {
-						this.show(id);
+						this.show(`${this.folderName}.${id}`);
 					}
 				}
 			}
