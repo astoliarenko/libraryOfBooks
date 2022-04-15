@@ -15,6 +15,9 @@ module.exports = {
 		},
 		BOOKS: {
 			NAME: "books",
-		},
+		}
 	},
+	TOKEN_NAMES: {
+		ACCESS_TOKEN: "access_token"
+	}
 };

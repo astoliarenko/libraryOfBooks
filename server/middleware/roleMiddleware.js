@@ -1,5 +1,7 @@
 const jwt = require("jsonwebtoken");
 const {SECRET} = require("../config");
+const constants = require("../constants");
+const getCookie = require("../helpers/usefulFunctions");
 
 module.exports = function (roles) {
 	return function(req, res, next) {
@@ -8,7 +10,8 @@ module.exports = function (roles) {
 		}
 	
 		try {
-			const token = req.headers.authorization.split(" ")[1];
+			const token = getCookie(req.headers.cookie, constants.TOKEN_NAMES.ACCESS_TOKEN);
+
 			if (!token) {
 				return res.status(403).json({message: "Нет доступа"})
 			}
