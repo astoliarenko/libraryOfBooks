@@ -9,18 +9,20 @@ export default class HeaderView extends JetView {
 	}
 
 	config() {
+		const headerHeight = 80;
+		const headerPadding = 13;
+
 		const headerTxt = {
 			template: this.headerTxt,
 			type: "header",
 			borderless: true,
-			width: 210,
 			align: "left"
 		};
 
 		const btnLogOut = {
 			view: "button",
 			label: "Log out",
-			type: "iconTop",
+			type: "icon",
 			icon: "wxi-user",
 			height: 50,
 			width: 100
@@ -28,13 +30,17 @@ export default class HeaderView extends JetView {
 
 		const ui = {
 			localId: constants.IDs.HEADER,
-			padding: 13,
+			padding: headerPadding,
+			css: "main-header",
 			cols: [
 				headerTxt,
 				{},
-				btnLogOut
+				{
+					borderless: true,
+					rows: [{}, btnLogOut, {}]
+				}
 			],
-			height: 100,
+			height: headerHeight,
 			borderless: true
 		};
 

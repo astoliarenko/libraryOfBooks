@@ -11,7 +11,7 @@ export default class OrderBookView extends JetView {
 			columns: [
 				{id: booksColumns.title, header: "", width: 50, sort: "string", fillspace: true},
 				{id: booksColumns.author, header: {content: "masterCheckbox", contentId: "mc1"}, width: 50, template: "{common.checkbox()}"},
-				{id: booksColumns.avalibleCopies, header: "Availible copies", width: 200, sort: "string"},
+				{id: booksColumns.avalibleCopies, header: "Copies", width: 100, sort: "string"},
 				{id: booksColumns.genres, header: "Genres", width: 80, fillspace: true},
 				{id: booksColumns.pages, header: "Pages", width: 100, sort: "int"}
 			],
@@ -37,7 +37,7 @@ export default class OrderBookView extends JetView {
 			css: "full-book-info",
 			view: "template",
 			localId: "fullInfoId",
-			width: 200,
+			width: 300,
 			template: (data) => {
 				const html = `
 					<div class="books-info">
@@ -60,7 +60,7 @@ export default class OrderBookView extends JetView {
 		};
 
 		const ui = {
-			type: "clean",
+			type: "space",
 			rows: [
 				{
 					type: "clean",

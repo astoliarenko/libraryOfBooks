@@ -1,3 +1,7 @@
+:root {
+	--color-dark-bg: #353538;
+    --color-white-smoke: #F5F5F5;
+}
 .webixappstart{
     opacity:0;
 }
@@ -55,4 +59,17 @@
 .app_menu .webix_icon{
 	font-size:20px;
 	vertical-align:middle;
+}
+
+/* ---  sidebar --- */
+.sidebar {
+    background-color: var(--color-white-smoke);
+}
+
+/* ---  main-header --- */
+.main-header .webix_header{
+    font-size: 36px;
+}
+.main-header .webix_header .webix_template {
+    line-height: 54px;
 }

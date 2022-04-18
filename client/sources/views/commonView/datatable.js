@@ -46,11 +46,10 @@ export default class DatatableView extends JetView {
 			rows: [
 				dt,
 				{
-					height: 100,
 					type: "clean",
 					paddingX: 8,
 					paddingY: 7,
-					rows: [{}, dtPager, {}]
+					cols: [{}, dtPager, {}]
 				}
 			]
 		};

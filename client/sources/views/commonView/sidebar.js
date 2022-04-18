@@ -11,6 +11,7 @@ export default class SidebarView extends JetView {
 
 	config() {
 		return {
+			css: "sidebar",
 			view: "sidebar",
 			localId: constants.IDs.SIDEBAR,
 			data: this.data,
