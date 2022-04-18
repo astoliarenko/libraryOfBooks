@@ -73,3 +73,24 @@
 .main-header .webix_header .webix_template {
     line-height: 54px;
 }
+
+/* ---  full-info   --- */
+.books-info .books-info__header {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+.books-info .books-info__left-column span{
+    display: block;
+    padding: 5px 0;
+}
+.books-info .books-info__left-column span:last-child{
+    padding-bottom: 0;
+}
+.books-info .books-info__left-column span:first-child{
+    padding-top: 0;
+}
+.books-info .books-info__content {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}

@@ -20,9 +20,9 @@ export default class DatatableView extends JetView {
 			template: (obj, common) => {
 				const pager = `
 					${common.prev(obj)}
-					${common.pages(obj)}
-					${common.last(obj)}
+					${common.pages(obj)}	
 					${common.next(obj)}
+					${common.last(obj)}
 				`;
 
 				return pager;

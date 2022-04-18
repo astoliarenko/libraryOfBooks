@@ -17,7 +17,7 @@ export default class SidebarView extends JetView {
 			data: this.data,
 			activeTitle: false,
 			borderless: true,
-			width: 250,
+			width: 200,
 			minHeight: 300,
 			on: {
 				onAfterSelect: (id) => {
