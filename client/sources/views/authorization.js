@@ -131,19 +131,5 @@ export default class AutorizationView extends JetView {
 
 	init() {
 		this.registrationWindow = this.ui(RegisterWindowView);
-
-		this.on(this.app, "app:user:login", ({roleId}) => {
-			switch (roleId) {
-				case 1:
-					this.show(rolesData["1"]);
-					break;
-				case 2:
-					this.show(rolesData["3"]);
-					break;
-				default:
-					this.show(rolesData["2"]);
-					break;
-			}
-		});
 	}
 }
