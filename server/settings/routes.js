@@ -1,7 +1,7 @@
 // const usersController = require("../modules/users/users.repository");
 const authController = require("../modules/authorization/authorization.controller");
 const booksController = require("../modules/books/books.controller");
-// const authMiddleware = require("../middleware/authMiddleware");
+const authMiddleware = require("../middleware/authMiddleware");
 const roleMiddleware = require("../middleware/roleMiddleware");
 const { DB } = require("../constants");
 
@@ -17,5 +17,9 @@ module.exports = (app) => {
 	);
 	app.route("/auth/registration").post(authController.registration);
 	app.route("/auth/login").post(authController.login);
-	app.route("/books/").get(booksController.getBooks);
+	app.route("/books").get(
+		// admin is for test, he will be removed in feature
+		roleMiddleware([DB.USERS.ROLES.READER, DB.USERS.ROLES.LIBRARIAN, DB.USERS.ROLES.ADMIN]),
+		booksController.getBooks
+	);
 };

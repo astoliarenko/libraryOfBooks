@@ -5,6 +5,7 @@ const db = require("../../settings/db");
 const util = require("util");
 const jwt = require("jsonwebtoken");
 const { SECRET } = require("../../config");
+const constants = require("../../constants");
 const promisifyDbQuery = util.promisify(db.query.bind(db));
 
 const generateAccessToken = (id, roles) => {
@@ -70,10 +71,14 @@ class authController {
 				return res.status(400).json({ message: "Введен неверный пароль" });
 			}
 
+			const userInfo = await promisifyDbQuery(
+				`SELECT * FROM \`${DB.USERS_INFO.NAME}\` WHERE \`${DB.USERS.FIELDS.USER_ID}\` = '${user[0].user_id}'`
+			);
+
 			const token = generateAccessToken(user[0].user_id, user[0].role_id);
 
 			res.cookie(
-				"access_token",
+				constants.TOKEN_NAMES.ACCESS_TOKEN,
 				token,
 				isRemember ? {
 					maxAge: 3600000 * 8,
@@ -82,7 +87,10 @@ class authController {
 					// httpOnly: true
 				} : {});
 
-			return res.json({ userName: `${user[0].firstName} ${user[0].secondName}`, roleId: user[0].role_id});
+			const firstName = constants.DB.USERS_INFO.FIELDS.FIRST_NAME;
+			const lastName = constants.DB.USERS_INFO.FIELDS.LAST_NAME;
+
+			return res.json({ userName: `${userInfo[0][firstName] || "Alex"} ${userInfo[0][lastName] || "Malex"}`, roleId: user[0].role_id});
 		} catch (e) {
 			console.log(e);
 			res.status(400).json({ message: "Login error" });
