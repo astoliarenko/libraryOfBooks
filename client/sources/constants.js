@@ -36,7 +36,8 @@ export default {
 	IDs: {
 		SIDEBAR: "sidebarId",
 		HEADER: "mainHeaderId",
-		DATATABLE: "commonDatatableId"
+		DATATABLE: "commonDatatableId",
+		USER_INFO_FORM: "userInfoFormId"
 	},
 	COOKIE_NAMES: {
 		USER: "user"
