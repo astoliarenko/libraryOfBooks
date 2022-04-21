@@ -21,10 +21,7 @@ export default class SidebarView extends JetView {
 			minHeight: 300,
 			on: {
 				onAfterSelect: (id) => {
-					if (id) {
-						// this.show(`${this.folderName}.${id}`);
-						this.show(id);
-					}
+					if (id) this.show(id);
 				}
 			}
 		};
