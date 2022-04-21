@@ -22,7 +22,8 @@ export default class SidebarView extends JetView {
 			on: {
 				onAfterSelect: (id) => {
 					if (id) {
-						this.show(`${this.folderName}.${id}`);
+						// this.show(`${this.folderName}.${id}`);
+						this.show(id);
 					}
 				}
 			}

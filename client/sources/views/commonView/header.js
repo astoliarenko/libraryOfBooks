@@ -25,7 +25,17 @@ export default class HeaderView extends JetView {
 			type: "icon",
 			icon: "wxi-user",
 			height: 50,
-			width: 100
+			width: 100,
+			click: () => {
+				webix.confirm("Log out?")
+					.then(() => {
+						const user = this.app.getService("user");
+						user.logout();
+					})
+					.fail(() => {
+						webix.message("Cancel");
+					});
+			}
 		};
 
 		const ui = {
