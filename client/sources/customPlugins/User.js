@@ -34,12 +34,12 @@ export default function User(app, _view, config) {
 				app.callEvent("app:user:login", [user]);
 
 				switch (user.roleId) {
-					case 1:
-						app.show(rolesData["1"]);
-						break;
-					case 2:
-						app.show(rolesData["3"]);
-						break;
+					// case 1:
+					// 	app.show(rolesData["1"]);
+					// 	break;
+					// case 2:
+					// 	app.show(rolesData["3"]);
+					// 	break;
 					default:
 						app.show(rolesData["2"]);
 						break;
@@ -48,10 +48,16 @@ export default function User(app, _view, config) {
 		},
 		logout() {
 			user = null;
-			return model.logout().then((res) => {
-				app.callEvent("app:user:logout", []);
-				return res;
-			});
+			// return model.logout().then((res) => {
+			// 	app.callEvent("app:user:logout", []);
+
+			// 	document.cookie = "access_token=; max-age: -1";
+
+			// 	return res;
+			// });
+			app.callEvent("app:user:logout", []);
+
+			document.cookie = "access_token=; max-age: -1";
 		}
 	};
 

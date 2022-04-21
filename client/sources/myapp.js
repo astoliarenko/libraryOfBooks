@@ -11,7 +11,12 @@ export default class MyApp extends JetApp {
 			version: VERSION,
 			router: BUILD_AS_MODULE ? EmptyRouter : HashRouter,
 			debug: !PRODUCTION,
-			start: "/authorization"
+			start: "/authorization",
+			views: {
+				orderBook: "reader.orderBook",
+				cancelOrder: "reader.cancelOrder",
+				profile: "reader.profile"
+			}
 		};
 
 		super({...defaults, ...config});
@@ -20,7 +25,8 @@ export default class MyApp extends JetApp {
 			User,
 			{
 				model: session,
-				login: "/authorization"
+				login: "/authorization",
+				afterLogin: "/authorization"
 			}
 		);
 	}
