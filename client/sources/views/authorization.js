@@ -132,9 +132,7 @@ export default class AutorizationView extends JetView {
 	init() {
 		this.registrationWindow = this.ui(RegisterWindowView);
 
-		this.on(this.app, "app:user:login", ({roleId, userName}) => {
-			document.cookie = `user=${userName}`;
-
+		this.on(this.app, "app:user:login", ({roleId}) => {
 			switch (roleId) {
 				case 1:
 					this.show(rolesData["1"]);

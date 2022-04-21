@@ -9,7 +9,8 @@ export default class DatatableView extends JetView {
 	}
 
 	config() {
-		const DT_PAGER_ID = "dtPagerId";
+		const DT_PAGER_ID = String(webix.uid());
+		// const DT_PAGER_ID = "myPagerId";
 
 		const dtPager = {
 			height: 32,
@@ -20,7 +21,7 @@ export default class DatatableView extends JetView {
 			template: (obj, common) => {
 				const pager = `
 					${common.prev(obj)}
-					${common.pages(obj)}	
+					${common.pages(obj)}
 					${common.next(obj)}
 					${common.last(obj)}
 				`;
@@ -59,9 +60,5 @@ export default class DatatableView extends JetView {
 
 	$$datatable() {
 		return this.$$(constants.IDs.DATATABLE);
-	}
-
-	setData(data) {
-		this.$$datatable().sync(data);
 	}
 }

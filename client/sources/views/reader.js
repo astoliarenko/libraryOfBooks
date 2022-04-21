@@ -1,7 +1,5 @@
 import {JetView} from "webix-jet";
 
-import constants from "../constants";
-import getCookie from "../helpers/usefulFunctions";
 import HeaderView from "./commonView/header";
 import SidebarView from "./commonView/sidebar";
 
@@ -14,14 +12,13 @@ import SidebarView from "./commonView/sidebar";
 // заполняет свои личные данные в ЛК
 export default class ReaderView extends JetView {
 	config() {
-		this.userName = getCookie(constants.COOKIE_NAMES.USER);
+		this.userName = this.app.getService("user").getUser().userName;
 
 		const sidebarConfig = {
 			listMenu: {
 				data: [
 					{id: "orderBook", value: "Order book", url: "orderBook"},
 					{id: "cancelOrder", value: "Cancel order", url: "cancelOrder"},
-					{id: "books", value: "Books", url: "books"},
 					{id: "profile", value: "Profile", url: "profile"}
 				],
 				folderName: "reader"
@@ -37,5 +34,9 @@ export default class ReaderView extends JetView {
 		};
 
 		return ui;
+	}
+
+	ready() {
+		this.sidebar.$$sidebar().select("orderBook");
 	}
 }

@@ -23,10 +23,29 @@ export default class OrderBookView extends JetView {
 				onAfterSelect: (data) => {
 					this.$$("fullInfoId").parse(booksCollection.getItem(data.id));
 				}
+				// onCheck: (id) => {
+				// }
 			}
 		};
 
 		this.dt = new DatatableView(this.app, dtConfig);
+
+		const btnOrderAllSelected = {
+			view: "button",
+			label: "Order all",
+			type: "icon",
+			icon: "wxi-download",
+			width: 120
+		};
+
+		const btnCancelOrder = {
+			view: "button",
+			label: "Cancel order",
+			type: "icon",
+			icon: "wxi-close-circle",
+			height: 50,
+			width: 150
+		};
 
 		const searchInput = {
 			view: "search",
@@ -68,7 +87,7 @@ export default class OrderBookView extends JetView {
 			rows: [
 				{
 					type: "clean",
-					cols: [searchInput, {}]
+					cols: [searchInput, {}, btnOrderAllSelected, btnCancelOrder]
 				},
 				{
 					type: "clean",
