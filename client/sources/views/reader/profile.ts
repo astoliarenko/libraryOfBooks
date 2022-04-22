@@ -16,11 +16,13 @@ export default class ProfileView extends JetView {
 			height: 50,
 			width: 100,
 			click: () => {
+				debugger;
 				webix.confirm("Apply changes?")
 					.then(() => {
 						this.applyChanges();
 						webix.message("Apply", "info");
 					})
+					// @ts-ignore
 					.fail(() => {
 						webix.message("Cancel", "error");
 					});
@@ -39,6 +41,7 @@ export default class ProfileView extends JetView {
 					.then(() => {
 						webix.message("Cancel", "info");
 					})
+					// @ts-ignore
 					.fail(() => {
 						webix.message("Cancel", "error");
 					});
@@ -91,7 +94,7 @@ export default class ProfileView extends JetView {
 											name: userInfoColumns.birthDate,
 											label: "Дата рождения",
 											timepicker: false,
-											format: webix.Date.dateToStr(constants.DATE_FORMAT),
+											format: webix.Date.dateToStr(constants.DATE_FORMAT, false),
 											labelWidth
 										},
 										{

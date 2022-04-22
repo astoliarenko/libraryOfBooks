@@ -1,19 +1,19 @@
 import {JetView} from "webix-jet";
 
-import constants from "../../constants";
+import constants from "../constants";
 
-export default class RegisterWindowView extends JetView {
+export default class BookWindowView extends JetView {
 	config() {
 		const btnWidth = 150;
 		const labelWidth = 120;
 		const formWidth = 400;
 
-		const btnRegisterNewUser = {
+		const btnAddNewBook = {
 			view: "button",
 			width: btnWidth,
-			label: "Reg now",
+			label: "Add new book",
 			css: "webix_primary",
-			click: () => this.registerNewUser()
+			click: () => this.addNewBook()
 		};
 
 		const btnCancel = {
@@ -32,20 +32,20 @@ export default class RegisterWindowView extends JetView {
 					rows: [
 						{
 							view: "text",
-							label: "Имя",
-							name: "firstName",
+							label: "Название",
+							name: "book_title",
 							labelWidth
 						},
 						{
 							view: "text",
-							label: "Фамилия",
-							name: "secondName",
+							label: "Photo",
+							name: "cover_photo",
 							labelWidth
 						},
 						{
 							view: "text",
-							label: "Отчество",
-							name: "thirdName",
+							label: "Жанры",
+							name: "genres",
 							labelWidth
 						},
 						{
@@ -57,10 +57,10 @@ export default class RegisterWindowView extends JetView {
 						{
 							view: "datepicker",
 							value: "",
-							name: "DateObj",
-							label: "Дата рождения",
+							name: "year_of_publishing",
+							label: "Год издания",
 							timepicker: false,
-							format: webix.Date.dateToStr(constants.DATE_FORMAT),
+							format: webix.Date.dateToStr(constants.YEAR_FORMAT, false),
 							labelWidth
 						},
 						{
@@ -115,7 +115,7 @@ export default class RegisterWindowView extends JetView {
 						},
 						{
 							cols: [
-								btnRegisterNewUser,
+								btnAddNewBook,
 								{},
 								btnCancel
 							]
@@ -142,24 +142,27 @@ export default class RegisterWindowView extends JetView {
 	}
 
 	// eslint-disable-next-line consistent-return
-	registerNewUser() {
-		// eslint-disable-next-line no-console
-		console.log("register new user");
+	addNewBook() {
+		console.log("add new book");
 
 		this.hideWindow();
 	}
 
 	hideWindow() {
-		this.form.clear();
-		this.form.clearValidation();
+		const form = this.$$form();
+
+		form.clear();
+		form.clearValidation();
+		// @ts-ignore
 		this.getRoot().hide();
 	}
 
 	showWindow() {
+		// @ts-ignore
 		this.getRoot().show();
 	}
 
-	init() {
-		this.form = this.$$(constants.AUTHORIZATION_VIEW.REGISTER.FORM_ID);
+	$$form(): webix.ui.form {
+		return this.$$(constants.AUTHORIZATION_VIEW.REGISTER.FORM_ID) as webix.ui.form;
 	}
 }

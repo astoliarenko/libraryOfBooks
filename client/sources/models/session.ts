@@ -1,6 +1,7 @@
 import constants from "../constants";
 
 function status() {
+	// @ts-ignore
 	return webix.ajax().post(`${constants.URLs.SERVER}auth/status`)
 		.then(res => res.json());
 }
@@ -20,6 +21,7 @@ function login(user, pass, isRemember) {
 }
 
 function logout() {
+	// @ts-ignore
 	return webix.ajax().post(`${constants.URLs.SERVER}auth/logout`)
 		.then(res => res.json());
 }

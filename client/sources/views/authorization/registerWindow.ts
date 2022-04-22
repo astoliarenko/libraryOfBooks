@@ -1,19 +1,19 @@
 import {JetView} from "webix-jet";
 
-import constants from "../constants";
+import constants from "../../constants";
 
-export default class BookWindowView extends JetView {
+export default class RegisterWindowView extends JetView {
 	config() {
 		const btnWidth = 150;
 		const labelWidth = 120;
 		const formWidth = 400;
 
-		const btnAddNewBook = {
+		const btnRegisterNewUser = {
 			view: "button",
 			width: btnWidth,
-			label: "Add new book",
+			label: "Reg now",
 			css: "webix_primary",
-			click: () => this.addNewBook()
+			click: () => this.registerNewUser()
 		};
 
 		const btnCancel = {
@@ -32,20 +32,20 @@ export default class BookWindowView extends JetView {
 					rows: [
 						{
 							view: "text",
-							label: "Название",
-							name: "book_title",
+							label: "Имя",
+							name: "firstName",
 							labelWidth
 						},
 						{
 							view: "text",
-							label: "Photo",
-							name: "cover_photo",
+							label: "Фамилия",
+							name: "secondName",
 							labelWidth
 						},
 						{
 							view: "text",
-							label: "Жанры",
-							name: "genres",
+							label: "Отчество",
+							name: "thirdName",
 							labelWidth
 						},
 						{
@@ -57,10 +57,10 @@ export default class BookWindowView extends JetView {
 						{
 							view: "datepicker",
 							value: "",
-							name: "year_of_publishing",
-							label: "Год издания",
+							name: "DateObj",
+							label: "Дата рождения",
 							timepicker: false,
-							format: webix.Date.dateToStr(constants.YEAR_FORMAT),
+							format: webix.Date.dateToStr(constants.DATE_FORMAT, false),
 							labelWidth
 						},
 						{
@@ -115,7 +115,7 @@ export default class BookWindowView extends JetView {
 						},
 						{
 							cols: [
-								btnAddNewBook,
+								btnRegisterNewUser,
 								{},
 								btnCancel
 							]
@@ -141,24 +141,29 @@ export default class BookWindowView extends JetView {
 		return ui;
 	}
 
+	$$form(): webix.ui.form {
+		return this.$$(constants.AUTHORIZATION_VIEW.REGISTER.FORM_ID) as webix.ui.form;
+	}
+
 	// eslint-disable-next-line consistent-return
-	addNewBook() {
-		console.log("add new book");
+	registerNewUser() {
+		// eslint-disable-next-line no-console
+		console.log("register new user");
 
 		this.hideWindow();
 	}
 
 	hideWindow() {
-		this.form.clear();
-		this.form.clearValidation();
+		const form = this.$$form();
+
+		form.clear();
+		form.clearValidation();
+		// @ts-ignore
 		this.getRoot().hide();
 	}
 
 	showWindow() {
+		// @ts-ignore
 		this.getRoot().show();
-	}
-
-	init() {
-		this.form = this.$$(constants.AUTHORIZATION_VIEW.REGISTER.FORM_ID);
 	}
 }

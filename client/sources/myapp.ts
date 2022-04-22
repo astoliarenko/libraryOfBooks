@@ -37,6 +37,7 @@ if (!BUILD_AS_MODULE) {
 	// validate token (and handle response)
 
 	webix.ready(() => {
+		// @ts-ignore
 		new MyApp().render();
 		// webix.debug({events: true});
 	});

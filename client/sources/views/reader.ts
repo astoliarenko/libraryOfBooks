@@ -3,23 +3,27 @@ import {JetView} from "webix-jet";
 import HeaderView from "./commonView/header";
 import SidebarView from "./commonView/sidebar";
 
-// reader:
-// регистрируется,
-// авторизуется,
-// заказывает книги,
-// отзывает заказ книг,
-// смотрит наличие доступных книг,
-// заполняет свои личные данные в ЛК
+// reader can:
+// registr,
+// auth,
+// order books,
+// cancel order,
+// see availible book copies,
+// edit profile data
 export default class ReaderView extends JetView {
+	userName: string;
+	sidebar: any;
+	header: any;
+
 	config() {
-		this.userName = this.app.getService("user").getUser().userName;
+		this.userName = this.app.getService("user").getUser()?.userName;
 
 		const sidebarConfig = {
 			listMenu: {
 				data: [
-					{id: "orderBook", value: "Order book", url: "orderBook"},
-					{id: "cancelOrder", value: "Cancel order", url: "cancelOrder"},
-					{id: "profile", value: "Profile", url: "profile"}
+					{id: "orderBook", value: "Order book"},
+					{id: "cancelOrder", value: "Cancel order"},
+					{id: "profile", value: "Profile"}
 				],
 				folderName: "reader"
 			}

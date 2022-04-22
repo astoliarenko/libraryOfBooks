@@ -1,16 +1,17 @@
-import {JetView} from "webix-jet";
+import {JetView, IJetApp} from "webix-jet";
 
 import constants from "../../constants";
 
 export default class DatatableView extends JetView {
-	constructor(app, config) {
-		super(app);
+	dtConfig: any;
+
+	constructor(app: IJetApp, config) {
+		super(app, {});
 		this.dtConfig = config;
 	}
 
 	config() {
-		const DT_PAGER_ID = String(webix.uid());
-		// const DT_PAGER_ID = "myPagerId";
+		const DT_PAGER_ID = "myPagerId";
 
 		const dtPager = {
 			height: 32,
@@ -58,7 +59,7 @@ export default class DatatableView extends JetView {
 		return ui;
 	}
 
-	$$datatable() {
-		return this.$$(constants.IDs.DATATABLE);
+	$$datatable(): webix.ui.layout {
+		return this.$$(constants.IDs.DATATABLE) as webix.ui.layout;
 	}
 }

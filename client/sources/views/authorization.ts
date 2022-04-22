@@ -5,6 +5,9 @@ import rolesData from "../data/rolesData";
 import RegisterWindowView from "./authorization/registerWindow";
 
 export default class AutorizationView extends JetView {
+	isRememberCredits: boolean;
+	registrationWindow: any;
+
 	config() {
 		const inputMargin = 10;
 		const formMaxWidth = 400;
@@ -95,8 +98,8 @@ export default class AutorizationView extends JetView {
 		return ui;
 	}
 
-	$$form() {
-		return this.$$(constants.AUTHORIZATION_VIEW.VIEW_IDS.FORM_ID);
+	$$form(): webix.ui.form {
+		return this.$$(constants.AUTHORIZATION_VIEW.VIEW_IDS.FORM_ID) as webix.ui.form;
 	}
 
 	authorizeUser() {
@@ -124,7 +127,7 @@ export default class AutorizationView extends JetView {
 
 	clearForm() {
 		const form = this.$$form();
-
+ 
 		form.clear();
 		form.clearValidation();
 	}

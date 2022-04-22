@@ -3,8 +3,10 @@ import {JetView} from "webix-jet";
 import constants from "../../constants";
 
 export default class HeaderView extends JetView {
+	headerTxt: string;
+
 	constructor(app, config) {
-		super(app);
+		super(app, {});
 		this.headerTxt = config.headerName;
 	}
 
@@ -32,6 +34,7 @@ export default class HeaderView extends JetView {
 						const user = this.app.getService("user");
 						user.logout();
 					})
+					// @ts-ignore
 					.fail(() => {
 						webix.message("Cancel");
 					});

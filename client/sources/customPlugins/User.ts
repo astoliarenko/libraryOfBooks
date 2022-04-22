@@ -66,7 +66,7 @@ export default function User(app, _view, config) {
 			service.logout();
 			obj.redirect = afterLogout;
 		}
-		else if (url !== login && !service.getStatus()) {
+		else if (url !== login && !service.getStatus(true)) {
 			obj.redirect = login;
 		}
 	}

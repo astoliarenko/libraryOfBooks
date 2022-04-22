@@ -6,6 +6,8 @@ import booksColumns from "../../data/booksColumns";
 import DatatableView from "../commonView/datatable";
 
 export default class OrderBookView extends JetView {
+	dt: any;
+
 	config() {
 		const fullInfoWidth = 500;
 
@@ -21,7 +23,8 @@ export default class OrderBookView extends JetView {
 			select: true,
 			on: {
 				onAfterSelect: (data) => {
-					this.$$("fullInfoId").parse(booksCollection.getItem(data.id));
+					const fullInfo = this.$$("fullInfoId") as webix.ui.template;
+					fullInfo.parse(booksCollection.getItem(data.id), "json");
 				}
 				// onCheck: (id) => {
 				// }
@@ -67,8 +70,8 @@ export default class OrderBookView extends JetView {
 							<div class="books-info__left-column">
 								<span><strong>Author:</strong> ${data[booksColumns.author]}</span>
 								<span><strong>Genres:</strong> ${data[booksColumns.genres]}</span>
-								<span><strong>Publishing house:</strong> ${data[booksColumns.publishing_house]}</span>
-								<span><strong>Coutry of publication:</strong> ${data[booksColumns.country_of_publication]}</span>
+								<span><strong>Publishing house:</strong> ${data[booksColumns.publishingHouse]}</span>
+								<span><strong>Coutry of publication:</strong> ${data[booksColumns.countryOfPublication]}</span>
 								<span><strong>Year of publishing:</strong> ${data[booksColumns.yearOfPublishing]}</span>
 							</div>
 							<div class="books-info__right-column">
