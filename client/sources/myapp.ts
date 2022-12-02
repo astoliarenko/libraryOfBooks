@@ -3,9 +3,10 @@ import {JetApp, EmptyRouter, HashRouter} from "webix-jet";
 import User from "./customPlugins/User";
 import "./styles/app.css";
 import session from "./models/session";
+import fetchApiService from "models/fetchApiService";
 
 export default class MyApp extends JetApp {
-	constructor(config) {
+	constructor(config = {}) {
 		const defaults = {
 			id: APPNAME,
 			version: VERSION,
@@ -35,10 +36,12 @@ export default class MyApp extends JetApp {
 if (!BUILD_AS_MODULE) {
 	// const token = localStorage.getItem("token"); or cookie
 	// validate token (and handle response)
+	const app = new MyApp();
 
 	webix.ready(() => {
+		app.use(fetchApiService, {});
 		// @ts-ignore
-		new MyApp().render();
+		app.render();
 		// webix.debug({events: true});
 	});
 }
