@@ -1,0 +1,128 @@
+import {eventsName} from '../helpers/constants/commonConst';
+import {getItem, setItem} from '../helpers/storages/localAndSessionStorage';
+
+import IQueryResult from '../interfaces/IQueryResult';
+import BaseModel from './baseModel';
+import {getRequestOptions, postRequestOptions} from './fetchApiService';
+import {showMessage} from './utils';
+
+export default class AuthModel extends BaseModel {
+    protected static instance: AuthModel;
+
+    private data: any;
+
+    private constructor() {
+        super();
+        this.entityName = 'auth';
+    }
+
+    public static getInstance(): AuthModel {
+        if (!AuthModel.instance) {
+            AuthModel.instance = new AuthModel();
+        }
+
+        return AuthModel.instance;
+    }
+
+    public getUserInfo() {
+        if (!this.data) {
+            this.data = JSON.parse(getItem(localStorage, 'userData'));
+        }
+        return this.data;
+    }
+
+    public isSimpleUser() {
+        const userInfo = this.getUserInfo();
+        return !userInfo?.isAdmin && !userInfo?.isSuperAdmin;
+    }
+
+    public isUserAdmin() {
+        const userInfo = this.getUserInfo();
+        return userInfo?.isAdmin;
+    }
+
+    public isUserSuperadmin() {
+        const userInfo = this.getUserInfo();
+        return userInfo?.isSuperAdmin;
+    }
+
+    async loginUser(body, subdomain?) {
+        return this.handleRequestResponse(
+            postRequestOptions({path: '/auth/login', body}),
+            body,
+            {
+                200: (response, result: IQueryResult) => {
+                    result.success = true;
+                    result.data = response.data;
+                    this.data = response.data;
+                    setItem(localStorage, 'userData', JSON.stringify(response.data));
+                    return result;
+                },
+                401: (response, result: IQueryResult) => {
+                    result.success = false;
+                    result.data.message = response.data.message;
+                    return result;
+                },
+                422: () => {
+                    showMessage('Invalid user credentials', 'error');
+                }
+                // todo allow replace default
+                // showMessage('Something went wrong. Please try to login again', 'error');
+            },
+            'login',
+            subdomain
+        );
+    }
+
+    async checkUser() {
+        return this.handleRequestResponse(
+            getRequestOptions({path: '/auth/user'}),
+            [],
+            {
+                200: (response, result: IQueryResult) => {
+                    result.success = true;
+                    this.data = response.data;
+                    setItem(localStorage, 'userData', JSON.stringify(response.data));
+                    return result;
+                }
+            },
+            'check user'
+        );
+    }
+
+    async refreshToken(app, repeatRequest) {
+        return this.handleRequestResponse(
+            getRequestOptions({path: '/auth/refresh'}),
+            [],
+            {
+                200: () => {
+                    return repeatRequest();
+                },
+                304: () => {
+                    return repeatRequest();
+                },
+                401: () => {
+                    // reset user data
+                    this.data = null;
+                    app.callEvent(eventsName.refreshTokenError);
+                }
+            },
+            'refresh token'
+        );
+    }
+
+    async logOutUser(body): Promise<IQueryResult> {
+        return this.handleRequestResponse(
+            postRequestOptions({path: '/auth/logout', body}),
+            body,
+            {200: (response: IQueryResult) => {
+                response.success = true;
+                // reset user data
+                this.data = null;
+                this.app.callEvent(eventsName.refreshTokenError, [true]);
+                return response;
+            }},
+            'logout'
+        );
+    }
+}
