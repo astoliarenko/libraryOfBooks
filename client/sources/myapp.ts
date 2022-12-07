@@ -41,7 +41,7 @@ if (!BUILD_AS_MODULE) {
 
 	webix.ready(() => {
 		app.use(fetchApiService, {});
-		app.attachEvent(events.appGuard, (url, point, nav) => {
+		app.attachEvent(events.app.appGuard, (url, point, nav) => {
 			console.log('guard url', nav);
 		});
 		// @ts-ignore

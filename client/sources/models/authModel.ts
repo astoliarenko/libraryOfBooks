@@ -104,7 +104,7 @@ export default class AuthModel extends BaseModel {
                 401: () => {
                     // reset user data
                     this.data = null;
-                    app.callEvent(events.refreshTokenError);
+                    app.callEvent(events.app.refreshTokenError);
                 }
             },
             'refresh token'
@@ -119,7 +119,7 @@ export default class AuthModel extends BaseModel {
                 response.success = true;
                 // reset user data
                 this.data = null;
-                this.app.callEvent(events.refreshTokenError, [true]);
+                this.app.callEvent(events.app.refreshTokenError, [true]);
                 return response;
             }},
             'logout'

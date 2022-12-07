@@ -56,7 +56,7 @@ export default function User(app, _view, config) {
 
 			// 	return res;
 			// });
-			app.callEvent(events.appLogout, []);
+			app.callEvent(events.app.appLogout, []);
 
 			document.cookie = "access_token=; max-age: -1";
 		}
