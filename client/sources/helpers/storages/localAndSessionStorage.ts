@@ -6,7 +6,7 @@ const setItem = (storage, key, val) => {
 
 const getItem = (storage, key) => storage.getItem(key);
 
-const setCookieItem = (key, val, options?) => Cookies.set(key, val, {secure: ENVIRONMENT !== 'local', ...options});
+const setCookieItem = (key, val, options?) => Cookies.set(key, val, {secure: true, ...options});
 
 const getCookieItem = key => Cookies.get(key);
 
