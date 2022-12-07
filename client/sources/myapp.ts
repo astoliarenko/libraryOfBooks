@@ -4,6 +4,7 @@ import User from "./customPlugins/User";
 import "./styles/app.css";
 import session from "./models/session";
 import fetchApiService from "models/fetchApiService";
+import { events } from "./helpers/constants/commonConst";
 
 export default class MyApp extends JetApp {
 	constructor(config = {}) {
@@ -40,6 +41,9 @@ if (!BUILD_AS_MODULE) {
 
 	webix.ready(() => {
 		app.use(fetchApiService, {});
+		app.attachEvent(events.appGuard, (url, point, nav) => {
+			console.log('guard url', nav);
+		});
 		// @ts-ignore
 		app.render();
 		// webix.debug({events: true});
