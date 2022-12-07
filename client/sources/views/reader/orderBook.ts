@@ -107,7 +107,7 @@ export default class OrderBookView extends JetView {
 			const id = booksCollection.getFirstId();
 
 			if (id) {
-				this.dt.$$datatable().select(id);
+				this.dt.$$datatable.select(id);
 			}
 		});
 	}

@@ -184,7 +184,7 @@ export default class ProfileView extends JetView {
 		// 	const id = booksCollection.getFirstId();
 
 		// 	if (id) {
-		// 		this.dt.$$datatable().select(id);
+		// 		this.dt.$$datatable.select(id);
 		// 	}
 		// });
 	}

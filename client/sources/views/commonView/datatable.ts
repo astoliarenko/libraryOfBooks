@@ -59,7 +59,7 @@ export default class DatatableView extends JetView {
 		return ui;
 	}
 
-	$$datatable(): webix.ui.layout {
+	get $$datatable(): webix.ui.layout {
 		return this.$$(constants.IDs.DATATABLE) as webix.ui.layout;
 	}
 }
