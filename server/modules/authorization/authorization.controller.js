@@ -72,10 +72,10 @@ class authController {
 			}
 
 			const userInfo = await promisifyDbQuery(
-				`SELECT * FROM \`${DB.USERS_INFO.NAME}\` WHERE \`${DB.USERS.COLUMNS.USER_ID}\` = '${user[0].user_id}'`
+				`SELECT * FROM \`${DB.USERS_INFO.NAME}\` WHERE \`${DB.USERS.COLUMNS.USER_ID}\` = '${user[0][DB.USERS.COLUMNS.USER_ID]}'`
 			);
 
-			const token = generateAccessToken(user[0].user_id, user[0].role_id);
+			const token = generateAccessToken(user[0][DB.USERS.COLUMNS.USER_ID], user[0][DB.USERS.COLUMNS.ROLE_ID]);
 
 			res.cookie(
 				constants.TOKEN_NAMES.ACCESS_TOKEN,

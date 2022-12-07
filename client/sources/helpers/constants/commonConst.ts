@@ -2,10 +2,13 @@
 * @module CommonConstants
 */
 /**
-* @constant {object} eventsName - list of global events
+* @constant {object} events - list of global events
 */
-export const eventsName = {
+export const events = {
     refreshTokenError: 'app:refreshTokenError',
+    appGuard: 'app:guard',
+    appLogout: 'app:user:logout'
+
 };
 
 /**

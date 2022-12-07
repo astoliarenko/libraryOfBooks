@@ -1,4 +1,4 @@
-import {eventsName} from '../helpers/constants/commonConst';
+import {events} from '../helpers/constants/commonConst';
 import {getItem, setItem} from '../helpers/storages/localAndSessionStorage';
 
 import IQueryResult from '../interfaces/IQueryResult';
@@ -104,7 +104,7 @@ export default class AuthModel extends BaseModel {
                 401: () => {
                     // reset user data
                     this.data = null;
-                    app.callEvent(eventsName.refreshTokenError);
+                    app.callEvent(events.refreshTokenError);
                 }
             },
             'refresh token'
@@ -119,7 +119,7 @@ export default class AuthModel extends BaseModel {
                 response.success = true;
                 // reset user data
                 this.data = null;
-                this.app.callEvent(eventsName.refreshTokenError, [true]);
+                this.app.callEvent(events.refreshTokenError, [true]);
                 return response;
             }},
             'logout'

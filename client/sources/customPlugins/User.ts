@@ -1,4 +1,5 @@
 import rolesData from "../data/rolesData";
+import { events } from "sources/helpers/constants/commonConst";
 
 export default function User(app, _view, config) {
 	config = config || {};
@@ -49,13 +50,13 @@ export default function User(app, _view, config) {
 		logout() {
 			user = null;
 			// return model.logout().then((res) => {
-			// 	app.callEvent("app:user:logout", []);
+			// 	app.callEvent(events.appLogout, []);
 
 			// 	document.cookie = "access_token=; max-age: -1";
 
 			// 	return res;
 			// });
-			app.callEvent("app:user:logout", []);
+			app.callEvent(events.appLogout, []);
 
 			document.cookie = "access_token=; max-age: -1";
 		}

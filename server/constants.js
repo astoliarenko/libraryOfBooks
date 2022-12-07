@@ -3,10 +3,10 @@ module.exports = {
 		USERS: {
 			NAME: "users",
 			COLUMNS: {
-				ROLE_ID: "role_id",
+				ROLE_ID: "id_role",
 				PASSWORD: "password",
 				LOGIN: "login",
-				USER_ID: "user_id"
+				USER_ID: "id_user"
 			},
 			ROLES: {
 				READER: 3,
