@@ -22,7 +22,7 @@ class authController {
 		try {
 			const { username, password } = req.body;
 			const users = await promisifyDbQuery(
-				`SELECT * FROM \`${DB.USERS.NAME}\` WHERE \`${DB.USERS.FIELDS.LOGIN}\` = '${username}'`
+				`SELECT * FROM \`${DB.USERS.NAME}\` WHERE \`${DB.USERS.COLUMNS.LOGIN}\` = '${username}'`
 			);
 
 			if (users[0]) {
@@ -34,8 +34,8 @@ class authController {
 			const hashPassword = await scryptHash(password, key);
 			const defRole = DB.USERS.ROLES.READER;
 			await promisifyDbQuery(
-				`INSERT INTO \`${DB.USERS.NAME}\`(\`${DB.USERS.FIELDS.LOGIN}\`, \`${DB.USERS.FIELDS.PASSWORD}\`, 
-				\`${DB.USERS.FIELDS.ROLE_ID}\`) VALUES('${username}', '${hashPassword}', '${defRole}')`
+				`INSERT INTO \`${DB.USERS.NAME}\`(\`${DB.USERS.COLUMNS.LOGIN}\`, \`${DB.USERS.COLUMNS.PASSWORD}\`, 
+				\`${DB.USERS.COLUMNS.ROLE_ID}\`) VALUES('${username}', '${hashPassword}', '${defRole}')`
 			);
 			res.status(200).json({
 				message: "Пользователь успешно зарегистрирован",
@@ -56,7 +56,7 @@ class authController {
 			console.log("isRemember - ", isRemember, "USERNAME=", req.body);
 
 			const user = await promisifyDbQuery(
-				`SELECT * FROM \`${DB.USERS.NAME}\` WHERE \`${DB.USERS.FIELDS.LOGIN}\` = '${username}'`
+				`SELECT * FROM \`${DB.USERS.NAME}\` WHERE \`${DB.USERS.COLUMNS.LOGIN}\` = '${username}'`
 			);
 
 			if (!user[0]) {
@@ -72,7 +72,7 @@ class authController {
 			}
 
 			const userInfo = await promisifyDbQuery(
-				`SELECT * FROM \`${DB.USERS_INFO.NAME}\` WHERE \`${DB.USERS.FIELDS.USER_ID}\` = '${user[0].user_id}'`
+				`SELECT * FROM \`${DB.USERS_INFO.NAME}\` WHERE \`${DB.USERS.COLUMNS.USER_ID}\` = '${user[0].user_id}'`
 			);
 
 			const token = generateAccessToken(user[0].user_id, user[0].role_id);
@@ -87,8 +87,8 @@ class authController {
 					// httpOnly: true
 				} : {});
 
-			const firstName = constants.DB.USERS_INFO.FIELDS.FIRST_NAME;
-			const lastName = constants.DB.USERS_INFO.FIELDS.LAST_NAME;
+			const firstName = constants.DB.USERS_INFO.COLUMNS.FIRST_NAME;
+			const lastName = constants.DB.USERS_INFO.COLUMNS.LAST_NAME;
 
 			return res.json({ userName: `${userInfo[0][firstName] || "Alex"} ${userInfo[0][lastName] || "Malex"}`, roleId: user[0].role_id});
 		} catch (e) {
@@ -120,7 +120,7 @@ class authController {
 
 			// need to get firstName and lastName from users table
 			// const user = await promisifyDbQuery(
-			// 	`SELECT * FROM \`${DB.USERS.NAME}\` WHERE \`${DB.USERS.FIELDS.LOGIN}\` = '${username}'`
+			// 	`SELECT * FROM \`${DB.USERS.NAME}\` WHERE \`${DB.USERS.COLUMNS.LOGIN}\` = '${username}'`
 			// );
 
 			// if (!user[0]) {

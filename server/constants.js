@@ -2,7 +2,7 @@ module.exports = {
 	DB: {
 		USERS: {
 			NAME: "users",
-			FIELDS: {
+			COLUMNS: {
 				ROLE_ID: "role_id",
 				PASSWORD: "password",
 				LOGIN: "login",
@@ -19,7 +19,7 @@ module.exports = {
 		},
 		USERS_INFO: {
 			NAME: "users_info",
-			FIELDS: {
+			COLUMNS: {
 				FIRST_NAME: "first_name",
 				LAST_NAME: "last_name"
 			}
