@@ -3,7 +3,7 @@ const { scryptHash, key } = require("../../crypto/cryptoMy");
 const response = require("../../response");
 const db = require("../../settings/db");
 const util = require("util");
-const jwt = require("jsonwebtoken");
+import { verify, sign } from "jsonwebtoken";
 const { SECRET } = require("../../config");
 const constants = require("../../constants");
 const promisifyDbQuery = util.promisify(db.query.bind(db));
@@ -13,7 +13,7 @@ const generateAccessToken = (id, roles) => {
 		id,
 		roles,
 	};
-	return jwt.sign(payload, SECRET, { expiresIn: "24h" });
+	return sign(payload, SECRET, { expiresIn: "24h" });
 	// {expiresIn: "24h"} - столько будет "жить" токен
 };
 
@@ -116,7 +116,7 @@ class authController {
 			const { token } = req.body;
 
 			// const token = res.headers.cookie
-			const decodedData = jwt.verify(token, SECRET);
+			const decodedData = verify(token, SECRET);
 
 			// need to get firstName and lastName from users table
 			// const user = await promisifyDbQuery(
