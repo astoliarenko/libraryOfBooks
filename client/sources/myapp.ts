@@ -28,7 +28,8 @@ export default class MyApp extends JetApp {
 			{
 				model: session,
 				login: "/authorization",
-				afterLogin: "/authorization"
+				logout: "/authorization",
+				afterLogout: "/authorization"
 			}
 		);
 	}
@@ -44,8 +45,8 @@ if (!BUILD_AS_MODULE) {
 		app.attachEvent(events.app.appGuard, (url, point, nav) => {
 			console.log('guard url', nav);
 		});
-		// @ts-ignore
 		app.render();
+		// @ts-ignore
 		// webix.debug({events: true});
 	});
 }

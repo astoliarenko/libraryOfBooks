@@ -1,12 +1,9 @@
 import rolesData from "../data/rolesData";
-import { events } from "sources/helpers/constants/commonConst";
 
 export default function User(app, _view, config) {
-	config = config || {};
-
-	const login = config.login || "/login";
-	const logout = config.logout || "/logout";
-	const afterLogout = config.afterLogout || "/login";
+	const login = config.login;
+	const logout = config.logout;
+	const afterLogout = config.afterLogout;
 	const ping = config.ping || 5 * 60 * 1000;
 	const model = config.model;
 	let user = config.user;
@@ -50,13 +47,15 @@ export default function User(app, _view, config) {
 		logout() {
 			user = null;
 			// return model.logout().then((res) => {
-			// 	app.callEvent(events.appLogout, []);
+			// 	app.callEvent("app:user:logout", []);
 
 			// 	document.cookie = "access_token=; max-age: -1";
 
 			// 	return res;
 			// });
-			app.callEvent(events.app.appLogout, []);
+			app.callEvent("app:user:logout", []);
+
+			// app.show(logout);
 
 			document.cookie = "access_token=; max-age: -1";
 		}
