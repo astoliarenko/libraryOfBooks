@@ -2,7 +2,7 @@ import constants from "../constants";
 
 function status() {
 	// @ts-ignore
-	return webix.ajax().post(`${constants.URLs.SERVER}auth/status`)
+	return webix.ajax().get(`${constants.URLs.SERVER}auth/status`)
 		.then(res => res.json());
 }
 

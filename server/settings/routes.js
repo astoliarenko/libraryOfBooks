@@ -23,4 +23,7 @@ module.exports = (app) => {
 		roleMiddleware([roles.READER, roles.LIBRARIAN, roles.ADMIN]),
 		booksController.getBooks
 	);
+	app.route("/auth/status").get((req, res) => {
+		res.send(true);
+	});
 };
