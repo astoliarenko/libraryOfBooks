@@ -1,4 +1,6 @@
 import IPostRequestOptions from './IFetchApiService';
+import constants from 'sources/constants';
+import { IJetApp } from 'webix-jet';
 
 interface IFetchOptions {
     method: string, headers: {string: string}, mode: RequestMode, body?: string
@@ -48,12 +50,13 @@ export const postRequestOptions = ({path, body}, isFormData: boolean = false) =>
     return options;
 };
 
-export default function fetchApiService(app) {
+export default function fetchApiService(app: IJetApp) {
     const service = {
         getAPIUrl(): string {
-            return `http/api`;
+            // return `http/api`;
+            return constants.URLs.SERVER;
         },
-        async fetchAPI(options, subdomain?) {
+        async fetchAPI(options): Promise<{data?: any, statusCode: number}> {
             let header;
             let body;
             const queryMethod = options.method;
@@ -68,12 +71,7 @@ export default function fetchApiService(app) {
                 body = options.body;
             }
 
-            // only for registration page - skip middleware
-            if (app.getUrl()[0]?.page === 'registrationCompany') {
-                options.path += '?forRegistration=1';
-            }
-
-            let fetchOptions:IFetchOptions = {
+            let fetchOptions: IFetchOptions = {
                 method: queryMethod,
                 headers: header,
                 mode: 'cors'
@@ -83,7 +81,7 @@ export default function fetchApiService(app) {
                 fetchOptions.body = body;
             }
 
-            const response = await fetch(this.getAPIUrl(subdomain) +
+            const response = await fetch(this.getAPIUrl() +
                 options.path, fetchOptions);
             const textResponse = await response.text();
             if (!textResponse) {
