@@ -1,5 +1,4 @@
 import IPostRequestOptions from './IFetchApiService';
-import constants from 'sources/constants';
 import { IJetApp } from 'webix-jet';
 
 interface IFetchOptions {
@@ -50,11 +49,11 @@ export const postRequestOptions = ({path, body}, isFormData: boolean = false) =>
     return options;
 };
 
-export default function fetchApiService(app: IJetApp) {
+export default function fetchApiService(app: IJetApp): void {
     const service = {
         getAPIUrl(): string {
             // return `http/api`;
-            return constants.URLs.SERVER;
+            return "http://localhost:3500/";
         },
         async fetchAPI(options): Promise<{data?: any, statusCode: number}> {
             let header;
