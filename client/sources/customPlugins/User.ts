@@ -1,6 +1,21 @@
+import { IJetApp } from "webix-jet";
 import rolesData from "../data/rolesData";
 
-export default function User(app, _view, config) {
+interface UserConfig {
+	login: string,
+	logout: string,
+	afterLogout?: string,
+	ping?: number,
+	model: any,
+	user?: any,
+	public?: any
+}
+
+export default function User(
+	app: IJetApp,
+	view: any,
+	config: UserConfig
+): void {
 	const login = config.login;
 	const logout = config.logout;
 	const afterLogout = config.afterLogout;
@@ -8,12 +23,16 @@ export default function User(app, _view, config) {
 	const model = config.model;
 	let user = config.user;
 
+	// type BooleanOrPromise<T extends true | false | undefined> = T extends true
+	// 	? Promise<void>
+	// 	: boolean;
+
 	const service = {
 		getUser() {
 			return user;
 		},
-
-		getStatus(server) {
+		// getStatus <T extends true | false>(server?: T): BooleanOrPromise<T> {
+		getStatus(server?: boolean): any {
 			if (!server) {
 				return user !== null;
 			}
@@ -22,7 +41,7 @@ export default function User(app, _view, config) {
 				user = data;
 			});
 		},
-		login(name, pass, isRemember) {
+		login(name, pass, isRemember): Promise<void> {
 			return model.login(name, pass, isRemember).then((data) => {
 				user = data;
 				if (!data) {
@@ -31,7 +50,7 @@ export default function User(app, _view, config) {
 
 				app.callEvent("app:user:login", [user]);
 
-				switch (user.roleId) {
+				switch (user.roleId) { /* TODO: uncomment code */
 					// case 1:
 					// 	app.show(rolesData["1"]);
 					// 	break;
@@ -39,7 +58,7 @@ export default function User(app, _view, config) {
 					// 	app.show(rolesData["3"]);
 					// 	break;
 					default:
-						app.show(rolesData["2"]);
+						app.show(rolesData["2"]); /* 2 - reader for test*/
 						break;
 				}
 			});
@@ -61,12 +80,12 @@ export default function User(app, _view, config) {
 		}
 	};
 
-	function canNavigate(url, obj) {
+	function canNavigate(url, obj): void {
 		if (url === logout) {
 			service.logout();
 			obj.redirect = afterLogout;
 		}
-		else if (url !== login && !service.getStatus(true)) {
+		else if (url !== login && !service.getStatus()) {
 			obj.redirect = login;
 		}
 	}
