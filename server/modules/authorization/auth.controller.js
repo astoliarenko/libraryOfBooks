@@ -1,10 +1,7 @@
 const { DB } = require("../../constants");
-const db = require("../../settings/db");
-const util = require("util");
 const jwt = require("jsonwebtoken");
 const { SECRET } = require("../../config");
 const constants = require("../../constants");
-const promisifyDbQuery = util.promisify(db.query.bind(db));
 const authService = require("./auth.service");
 
 const generateAccessToken = (id, roles) => {
@@ -84,46 +81,46 @@ class authController {
 		}
 	}
 
-	async getUsers(req, res) {
-		try {
-			const users = await promisifyDbQuery(
-				`SELECT * FROM \`${DB.USERS.NAME}\``
-			);
-			res.json(users);
-		} catch (e) {
-			console.log(e);
-			res.status(400).json({
-				message: "get user error",
-			});
-		}
-	}
+	// async getUsers(req, res) {
+	// 	try {
+	// 		const users = await promisifyDbQuery(
+	// 			`SELECT * FROM \`${DB.USERS.NAME}\``
+	// 		);
+	// 		res.json(users);
+	// 	} catch (e) {
+	// 		console.log(e);
+	// 		res.status(400).json({
+	// 			message: "get user error",
+	// 		});
+	// 	}
+	// }
 
-	async getUserFromToken(req, res) {
-		try {
-			const { token } = req.body;
+	// async getUserFromToken(req, res) {
+	// 	try {
+	// 		const { token } = req.body;
 
-			// const token = res.headers.cookie
-			const decodedData = jwt.verify(token, SECRET);
+	// 		// const token = res.headers.cookie
+	// 		const decodedData = jwt.verify(token, SECRET);
 
-			// need to get firstName and lastName from users table
-			// const user = await promisifyDbQuery(
-			// 	`SELECT * FROM \`${DB.USERS.NAME}\` WHERE \`${DB.USERS.COLUMNS.LOGIN}\` = '${username}'`
-			// );
+	// 		// need to get firstName and lastName from users table
+	// 		// const user = await promisifyDbQuery(
+	// 		// 	`SELECT * FROM \`${DB.USERS.NAME}\` WHERE \`${DB.USERS.COLUMNS.LOGIN}\` = '${username}'`
+	// 		// );
 
-			// if (!user[0]) {
-			// 	return res.status(400).json({
-			// 		message: `Пользователь ${username} не найден`,
-			// 	});
-			// }
+	// 		// if (!user[0]) {
+	// 		// 	return res.status(400).json({
+	// 		// 		message: `Пользователь ${username} не найден`,
+	// 		// 	});
+	// 		// }
 
-			res.json(decodedData);
-		} catch (e) {
-			console.log(e);
-			res.status(400).json({
-				message: "get user from token error",
-			});
-		}
-	}
+	// 		res.json(decodedData);
+	// 	} catch (e) {
+	// 		console.log(e);
+	// 		res.status(400).json({
+	// 			message: "get user from token error",
+	// 		});
+	// 	}
+	// }
 }
 
 module.exports = new authController();
