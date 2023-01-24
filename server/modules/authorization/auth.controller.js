@@ -47,8 +47,6 @@ class authController {
 				password
 			});
 
-			console.log('user', user);
-
 			if (user.success) {
 				const token = generateAccessToken(user[DB.USERS.COLUMNS.USER_ID], user[DB.USERS.COLUMNS.ROLE_ID]);
 
