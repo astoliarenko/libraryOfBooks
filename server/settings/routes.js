@@ -1,5 +1,5 @@
 // const usersController = require("../modules/users/users.repository");
-const authController = require("../modules/authorization/authorization.controller");
+const authController = require("../modules/authorization/auth.controller");
 const booksController = require("../modules/books/books.controller");
 const authMiddleware = require("../middleware/authMiddleware");
 const roleMiddleware = require("../middleware/roleMiddleware");
