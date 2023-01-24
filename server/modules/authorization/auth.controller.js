@@ -1,13 +1,11 @@
 const { DB } = require("../../constants");
-const { scryptHash, key } = require("../../crypto/cryptoMy");
-const response = require("../../response");
 const db = require("../../settings/db");
 const util = require("util");
 const jwt = require("jsonwebtoken");
 const { SECRET } = require("../../config");
 const constants = require("../../constants");
 const promisifyDbQuery = util.promisify(db.query.bind(db));
-const authService = require("./authorization.service");
+const authService = require("./auth.service");
 
 const generateAccessToken = (id, roles) => {
 	const payload = {
