@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken");
 const { SECRET } = require("../../config");
 const constants = require("../../constants");
 const promisifyDbQuery = util.promisify(db.query.bind(db));
+const authService = require("./authorization.service");
 
 const generateAccessToken = (id, roles) => {
 	const payload = {
@@ -21,28 +22,21 @@ class authController {
 	async registration(req, res) {
 		try {
 			const { username, password } = req.body;
-			const users = await promisifyDbQuery(
-				`SELECT * FROM \`${DB.USERS.NAME}\` WHERE \`${DB.USERS.COLUMNS.LOGIN}\` = '${username}'`
-			);
+			const newUserData = await authService.registerUser({ username, password });
 
-			if (users[0]) {
-				return res.status(400).json({
-					message: "Пользователь с таким именем уже существует",
+			if (newUserData.success) {
+				res.status(newUserData.status).json({
+					message: newUserData.message,
 				});
 			}
-
-			const hashPassword = await scryptHash(password, key);
-			const defRole = DB.USERS.ROLES.READER;
-			await promisifyDbQuery(
-				`INSERT INTO \`${DB.USERS.NAME}\`(\`${DB.USERS.COLUMNS.LOGIN}\`, \`${DB.USERS.COLUMNS.PASSWORD}\`, 
-				\`${DB.USERS.COLUMNS.ROLE_ID}\`) VALUES('${username}', '${hashPassword}', '${defRole}')`
-			);
-			res.status(200).json({
-				message: "Пользователь успешно зарегистрирован",
-			});
-			// response.status(results, res);
+			else {
+				res.status(newUserData.status).json({
+					message: newUserData.message,
+				});
+			}
 		} catch (e) {
-			console.log(e);
+			console.log(e); /* TODO: delete */
+
 			res.status(400).json({
 				message: "Registration error",
 			});
@@ -52,45 +46,40 @@ class authController {
 	async login(req, res) {
 		try {
 			const { username, password, isRemember } = req.body;
-			// show username and isRemember
-			console.log("isRemember - ", isRemember, "USERNAME=", req.body);
 
-			const user = await promisifyDbQuery(
-				`SELECT * FROM \`${DB.USERS.NAME}\` WHERE \`${DB.USERS.COLUMNS.LOGIN}\` = '${username}'`
-			);
+			const user = await authService.login({
+				username,
+				password
+			});
 
-			if (!user[0]) {
-				return res.status(400).json({
-					message: `Пользователь ${username} не найден`,
+			console.log('user', user);
+
+			if (user.success) {
+				const token = generateAccessToken(user[DB.USERS.COLUMNS.USER_ID], user[DB.USERS.COLUMNS.ROLE_ID]);
+
+				res.cookie(
+					constants.TOKEN_NAMES.ACCESS_TOKEN,
+					token,
+					isRemember
+						? {
+							maxAge: 3600000 * 8,
+							// 8 hours
+							// secure: false,
+							// httpOnly: true
+						}
+						: {}
+				);
+
+				res.status(user.status).json({
+					message: user.message,
+					userInfo: user.userInfo
 				});
 			}
-
-			const hashPassword = await scryptHash(password, key);
-
-			if (hashPassword !== user[0].password) {
-				return res.status(400).json({ message: "Введен неверный пароль" });
+			else {
+				res.status(user.status).json({
+					message: user.message,
+				});
 			}
-
-			const userInfo = await promisifyDbQuery(
-				`SELECT * FROM \`${DB.USERS_INFO.NAME}\` WHERE \`${DB.USERS.COLUMNS.USER_ID}\` = '${user[0][DB.USERS.COLUMNS.USER_ID]}'`
-			);
-
-			const token = generateAccessToken(user[0][DB.USERS.COLUMNS.USER_ID], user[0][DB.USERS.COLUMNS.ROLE_ID]);
-
-			res.cookie(
-				constants.TOKEN_NAMES.ACCESS_TOKEN,
-				token,
-				isRemember ? {
-					maxAge: 3600000 * 8,
-					// 8 hours
-					// secure: false,
-					// httpOnly: true
-				} : {});
-
-			const firstName = constants.DB.USERS_INFO.COLUMNS.FIRST_NAME;
-			const lastName = constants.DB.USERS_INFO.COLUMNS.LAST_NAME;
-
-			return res.json({ userName: `${userInfo[0][firstName] || "Alex"} ${userInfo[0][lastName] || "Malex"}`, roleId: user[0].role_id});
 		} catch (e) {
 			console.log(e);
 			res.status(400).json({ message: "Login error" });
