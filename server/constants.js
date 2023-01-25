@@ -16,10 +16,22 @@ module.exports = {
 		},
 		BOOKS: {
 			NAME: "books",
+			COLUMNS: {
+				ID_AUTHOR: "id_author"
+			}
 		},
 		USERS_INFO: {
 			NAME: "users_info",
 			COLUMNS: {
+				TITLE: "book_title",
+				FIRST_NAME: "first_name",
+				LAST_NAME: "last_name"
+			}
+		},
+		AUTHORS: {
+			NAME: "authors",
+			COLUMNS: {
+				ID: "id_author",
 				FIRST_NAME: "first_name",
 				LAST_NAME: "last_name"
 			}
