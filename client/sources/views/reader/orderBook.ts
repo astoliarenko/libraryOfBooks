@@ -13,11 +13,11 @@ export default class OrderBookView extends JetView {
 
 		const dtConfig = {
 			columns: [
-				{id: booksColumns.title, header: "", width: 50, sort: "string", fillspace: true},
-				{id: booksColumns.author, header: {content: "masterCheckbox", contentId: "mc1"}, width: 50, template: "{common.checkbox()}"},
-				{id: booksColumns.avalibleCopies, header: "Copies", width: 100, sort: "string"},
-				{id: booksColumns.genres, header: "Genres", width: 150},
-				{id: booksColumns.pages, header: "Pages", width: 100, sort: "int"}
+				{ id: booksColumns.title, header: "", width: 50, sort: "string", fillspace: true },
+				{ id: booksColumns.author, header: { content: "masterCheckbox", contentId: "mc1" }, width: 50, template: "{common.checkbox()}" },
+				{ id: booksColumns.avalibleCopies, header: "Copies", width: 100, sort: "string" },
+				{ id: booksColumns.genres, header: "Genres", width: 150 },
+				{ id: booksColumns.pages, header: "Pages", width: 100, sort: "int" }
 			],
 			data: booksCollection,
 			select: true,
@@ -29,7 +29,7 @@ export default class OrderBookView extends JetView {
 				// onCheck: (id) => {
 				// }
 			}
-		};
+		} as unknown as webix.ui.datatableConfig;
 
 		this.dt = new DatatableView(this.app, dtConfig);
 
