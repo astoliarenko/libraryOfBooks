@@ -17,7 +17,14 @@ module.exports = {
 		BOOKS: {
 			NAME: "books",
 			COLUMNS: {
+				ID: "id_book",
 				ID_AUTHOR: "id_author"
+			}
+		},
+		BOOKS_GENRE: {
+			NAME: "books_genre",
+			COLUMNS: {
+				ID_GENRE: "id_genre"
 			}
 		},
 		USERS_INFO: {
