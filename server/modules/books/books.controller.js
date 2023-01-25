@@ -1,5 +1,19 @@
 const repository = require("./books.repository");
 
+const modifyBooksData = (books) => {
+	if (books.length) {
+		return books.map((book) => {
+			return {
+				...book,
+				author: `${book.first_name} ${book.last_name}`
+			};
+		});
+	}
+	else {
+		return [];
+	}	
+};
+
 class booksController {
 	async addNewBook(req, res) {
 		try {
@@ -15,7 +29,7 @@ class booksController {
 			const books = await repository.getAllBooks();
 
 			if (books) {
-				res.json(books);
+				res.json(modifyBooksData(books));
 			}
 			else {
 				res.status(400).json({
