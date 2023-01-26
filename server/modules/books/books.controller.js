@@ -44,6 +44,27 @@ class booksController {
 			});
 		}
 	}
+
+	async getBookGenres(req, res) {
+		try {
+			const bookGenres = await repository.getBookGenres();
+
+			if (bookGenres) {
+				res.json(bookGenres);
+			}
+			else {
+				res.status(400).json({
+					message: "get genres error",
+				});
+			}		
+		} catch (e) {
+			console.log(e);
+
+			res.status(400).json({
+				message: "get genres error",
+			});
+		}
+	}
 }
 
 module.exports = new booksController();

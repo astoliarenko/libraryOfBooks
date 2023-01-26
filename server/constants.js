@@ -27,6 +27,9 @@ module.exports = {
 				ID_GENRE: "id_genre"
 			}
 		},
+		GENRES: {
+			NAME: "genres"
+		},
 		USERS_INFO: {
 			NAME: "users_info",
 			COLUMNS: {

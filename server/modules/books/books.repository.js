@@ -16,6 +16,13 @@ class BooksRepository {
 			GROUP BY books.${dbNames.BOOKS.COLUMNS.ID}
 		`);
 	}
+
+	async getBookGenres() {
+		return promisifyDbQuery(`
+			SELECT *
+			FROM ${dbNames.GENRES.NAME}
+		`);
+	}
 }
 
 module.exports = new BooksRepository();
