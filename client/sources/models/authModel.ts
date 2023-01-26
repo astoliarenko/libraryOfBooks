@@ -31,22 +31,22 @@ export default class AuthModel extends BaseModel {
         return this.data;
     }
 
-    public isSimpleUser() {
+    public isReader() {
         const userInfo = this.getUserInfo();
         return !userInfo?.isAdmin && !userInfo?.isSuperAdmin;
     }
 
-    public isUserAdmin() {
+    public isAdmin() {
         const userInfo = this.getUserInfo();
         return userInfo?.isAdmin;
     }
 
-    public isUserSuperadmin() {
+    public isLibrarian() {
         const userInfo = this.getUserInfo();
         return userInfo?.isSuperAdmin;
     }
 
-    async loginUser(body, subdomain?) {
+    async loginUser(body) {
         return this.handleRequestResponse(
             postRequestOptions({path: '/auth/login', body}),
             body,
@@ -69,8 +69,7 @@ export default class AuthModel extends BaseModel {
                 // todo allow replace default
                 // showMessage('Something went wrong. Please try to login again', 'error');
             },
-            'login',
-            subdomain
+            'login'
         );
     }
 

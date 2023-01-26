@@ -5,6 +5,9 @@ import "./styles/app.css";
 import session from "./models/session";
 import fetchApiService from "models/fetchApiService";
 import { events } from "./helpers/constants/commonConst";
+import AuthModel from "models/authModel";
+import BooksModel from "models/books";
+import { IJetApp } from "webix-jet";
 
 export default class MyApp extends JetApp {
 	constructor(config = {}) {
@@ -40,11 +43,27 @@ if (!BUILD_AS_MODULE) {
 	// validate token (and handle response)
 	const app = new MyApp();
 
-	webix.ready(() => {
+	const setAppSettings = (app) => {
 		app.use(fetchApiService, {});
 		app.attachEvent(events.app.appGuard, (url, point, nav) => {
 			console.log('guard url', nav);
 		});
+
+		const setAppInstanceForModels = (app: IJetApp) => {
+			const models = [
+				AuthModel,
+				BooksModel
+			];
+			models.forEach((model) => {
+				model.getInstance().setAppInstance(app);
+			});
+		};
+
+		setAppInstanceForModels(app);
+	}
+
+	webix.ready(() => {
+		setAppSettings(app);
 		app.render();
 		// @ts-ignore
 		// webix.debug({events: true});
