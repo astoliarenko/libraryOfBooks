@@ -2,6 +2,7 @@ import {JetView} from "webix-jet";
 
 import HeaderView from "./commonView/header";
 import SidebarView from "./commonView/sidebar";
+import BooksModel from "models/books";
 
 // reader can:
 // registr,
@@ -38,6 +39,18 @@ export default class ReaderView extends JetView {
 		};
 
 		return ui;
+	}
+
+	init() {
+		this.loadGenres();
+	}
+
+	async loadGenres() {
+		const booksModel = BooksModel.getInstance();
+		const res = await booksModel.getBookGenres();
+		if (res.success) {
+			booksModel.setGenresData(res.data);
+		}
 	}
 
 	ready() {
