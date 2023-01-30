@@ -4,9 +4,11 @@ import booksCollection from "../../collections/booksDataCollections";
 // import constants from "../../constants";
 import booksColumns from "../../data/booksColumns";
 import DatatableView from "../commonView/datatable";
+import BooksModel from "models/books";
 
 export default class OrderBookView extends JetView {
 	dt: any;
+	booksData: any;
 
 	config() {
 		const fullInfoWidth = 500;
@@ -19,12 +21,12 @@ export default class OrderBookView extends JetView {
 				{ id: booksColumns.genres, header: "Genres", width: 150 },
 				{ id: booksColumns.pages, header: "Pages", width: 100, sort: "int" }
 			],
-			data: booksCollection,
+			// data: booksCollection,
 			select: true,
 			on: {
 				onAfterSelect: (data) => {
 					const fullInfo = this.$$("fullInfoId") as webix.ui.template;
-					fullInfo.parse(booksCollection.getItem(data.id), "json");
+					fullInfo.parse(this.dt.$$datatable.getItem(data.id), "json");
 				}
 				// onCheck: (id) => {
 				// }
@@ -102,13 +104,20 @@ export default class OrderBookView extends JetView {
 		return ui;
 	}
 
-	ready() {
-		booksCollection.waitData.then(() => {
-			const id = booksCollection.getFirstId();
+	loadAllBooks() {
+		const booksModel = BooksModel.getInstance();
+		return booksModel.getAllBooks();
+	}
 
-			if (id) {
-				this.dt.$$datatable.select(id);
-			}
-		});
+	async ready() {
+		const books = await this.loadAllBooks();
+
+		if (books.success && books.data.length) {
+			const table = this.dt.$$datatable;
+			table.parse(books.data,  'json', true);
+			table.select(table.getFirstId());
+		}
+
+		console.log('books', books.data);
 	}
 }
