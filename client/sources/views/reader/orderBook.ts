@@ -25,7 +25,7 @@ export default class OrderBookView extends JetView {
 			select: true,
 			on: {
 				onAfterSelect: (data) => {
-					const fullInfo = this.$$("fullInfoId") as webix.ui.template;
+					const fullInfo = this.$$("fullInfoId") as unknown as webix.ui.template;
 					fullInfo.parse(this.dt.$$datatable.getItem(data.id), "json");
 				}
 				// onCheck: (id) => {
