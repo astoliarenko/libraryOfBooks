@@ -163,6 +163,6 @@ export default class BookWindowView extends JetView {
 	}
 
 	$$form(): webix.ui.form {
-		return this.$$(constants.AUTHORIZATION_VIEW.REGISTER.FORM_ID) as webix.ui.form;
+		return this.$$(constants.AUTHORIZATION_VIEW.REGISTER.FORM_ID) as unknown as webix.ui.form;
 	}
 }

@@ -30,6 +30,6 @@ export default class SidebarView extends JetView {
 	}
 
 	$$sidebar(): webix.ui.sidebar {
-		return this.$$(constants.IDs.SIDEBAR) as webix.ui.sidebar;
+		return this.$$(constants.IDs.SIDEBAR) as unknown as webix.ui.sidebar;
 	}
 }

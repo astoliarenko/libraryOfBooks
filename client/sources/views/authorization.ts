@@ -99,7 +99,7 @@ export default class AutorizationView extends JetView {
 	}
 
 	$$form(): webix.ui.form {
-		return this.$$(constants.AUTHORIZATION_VIEW.VIEW_IDS.FORM_ID) as webix.ui.form;
+		return this.$$(constants.AUTHORIZATION_VIEW.VIEW_IDS.FORM_ID) as unknown as webix.ui.form;
 	}
 
 	authorizeUser() {
