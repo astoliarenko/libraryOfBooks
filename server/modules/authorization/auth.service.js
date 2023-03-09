@@ -45,7 +45,7 @@ class authService {
 	}
 
 	async login(credentials) {
-		const user = (await repository.getUserByLogin(credentials.username))[0];
+		const user = (await repository.getUserByLogin(credentials.username))[0][0];
 
 		if (!user) {
 			return {
