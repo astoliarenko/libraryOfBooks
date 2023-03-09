@@ -3,6 +3,7 @@ import {JetView} from "webix-jet";
 import constants from "../constants";
 import rolesData from "../data/rolesData";
 import RegisterWindowView from "./authorization/registerWindow";
+import { getCookieItem } from "../helpers/storages/localAndSessionStorage";
 
 export default class AutorizationView extends JetView {
 	isRememberCredits: boolean;
@@ -119,6 +120,18 @@ export default class AutorizationView extends JetView {
 		};
 
 		user.login(data.username, data.password, this.isRememberCredits)
+			.then(field => {
+				if (field) {
+					const form = this.$$form();
+
+					if (field === 'login') {
+						form.markInvalid(field, 'Wrong username');
+					}
+					else if (field === 'password') {
+						form.markInvalid(field, 'Wrong password');
+					}
+				}
+			})
 			.catch((e) => {
 				// eslint-disable-next-line no-console
 				console.log(e);
@@ -134,5 +147,14 @@ export default class AutorizationView extends JetView {
 
 	init() {
 		this.registrationWindow = this.ui(RegisterWindowView);
+
+		if (getCookieItem(constants.COOKIE_NAMES.accsessToken)) {
+			const user = this.app.getService("user");
+
+			user.cookieLogin().catch((e) => {
+				// eslint-disable-next-line no-console
+				console.log(e);
+			});
+		}
 	}
 }

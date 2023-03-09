@@ -3,11 +3,12 @@ const jwt = require("jsonwebtoken");
 const { SECRET } = require("../../config");
 const constants = require("../../constants");
 const authService = require("./auth.service");
+const getCookie = require("../../helpers/usefulFunctions");
 
-const generateAccessToken = (id, roles) => {
+const generateAccessToken = (id, role) => {
 	const payload = {
 		id,
-		roles,
+		role, /* 1 role */
 	};
 	return jwt.sign(payload, SECRET, { expiresIn: "24h" });
 	// {expiresIn: "24h"} - столько будет "жить" токен
@@ -48,7 +49,10 @@ class authController {
 			});
 
 			if (user.success) {
-				const token = generateAccessToken(user[DB.USERS.COLUMNS.USER_ID], user[DB.USERS.COLUMNS.ROLE_ID]);
+				const token = generateAccessToken(
+					user.userInfo.userId,
+					user.userInfo.roleId
+				);
 
 				res.cookie(
 					constants.TOKEN_NAMES.ACCESS_TOKEN,
@@ -62,18 +66,27 @@ class authController {
 						}
 						: {}
 				);
-
-				res.status(user.status).json({
-					message: user.message,
-					userInfo: user.userInfo,
-					success: user.success
-				});
 			}
-			else {
-				res.status(user.status).json({
-					message: user.message,
-					success: user.success
-				});
+
+			res.status(user.status).json(user);
+		} catch (e) {
+			console.log(e);
+			res.status(400).json({ message: "Login error", success: false });
+		}
+	}
+
+	async cookieLogin(req, res) {
+		try {
+			const token = getCookie(req.headers.cookie, constants.TOKEN_NAMES.ACCESS_TOKEN);
+
+			if (token) {
+				const userInfo = await authService.cookieLogin(token);
+				if (userInfo.success) {
+					res.status(200).json(userInfo);
+				}
+				else {
+					res.status(400).json(userInfo);
+				}
 			}
 		} catch (e) {
 			console.log(e);

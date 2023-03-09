@@ -20,10 +20,23 @@ function login(user, pass, isRemember) {
 		.then(res => res.json());
 }
 
+function cookieLogin() {
+	return	fetch(`${constants.URLs.SERVER}auth/login`, {
+		method: "GET",
+		// mode: 'no-cors', // no-cors, *cors, same-origin
+		credentials: "include", // omit, same-origin*
+		// mode: 'no-cors',
+		headers: {
+			"Content-Type": "application/json"
+		}
+	})
+		.then(res => res.json());
+}
+
 function logout() {
 	// @ts-ignore
 	return webix.ajax().post(`${constants.URLs.SERVER}auth/logout`)
 		.then(res => res.json());
 }
 
-export default {status, login, logout};
+export default {status, login, logout, cookieLogin};

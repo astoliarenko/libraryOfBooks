@@ -26,6 +26,23 @@ export default function User(
 	// type BooleanOrPromise<T extends true | false | undefined> = T extends true
 	// 	? Promise<void>
 	// 	: boolean;
+	const loginUser = (data) => {
+		user = data.userInfo;
+
+		app.callEvent("app:user:login", [user]);
+
+		switch (user.roleId) { /* TODO: uncomment code */
+		// case 1:
+		// 	app.show(rolesData["1"]);
+		// 	break;
+		// case 2:
+		// 	app.show(rolesData["3"]);
+		// 	break;
+		default:
+			app.show(rolesData["2"]); /* 2 - reader for test*/
+			break;
+		}
+	};
 
 	const service = {
 		getUser() {
@@ -44,21 +61,21 @@ export default function User(
 		login(name, pass, isRemember): Promise<void> {
 			return model.login(name, pass, isRemember).then((data) => {
 				if (data.success) {
-					user = data.userInfo;
-					console.log('userInfo', user);
-					app.callEvent("app:user:login", [user]);
-
-					switch (user.roleId) { /* TODO: uncomment code */
-					// case 1:
-					// 	app.show(rolesData["1"]);
-					// 	break;
-					// case 2:
-					// 	app.show(rolesData["3"]);
-					// 	break;
-					default:
-						app.show(rolesData["2"]); /* 2 - reader for test*/
-						break;
+					loginUser(data);
 				}
+				else {
+					webix.message({type: "error", text: data.message});
+					return data.field;
+				}
+				if (!data) {
+					throw new Error("Access denied");
+				}
+			});
+		},
+		cookieLogin() {
+			return model.cookieLogin().then((data) => {
+				if (data.success) {
+					loginUser(data);
 				}
 				else {
 					webix.message({type: "error", text: data.message});

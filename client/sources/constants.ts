@@ -40,6 +40,7 @@ export default {
 		USER_INFO_FORM: "userInfoFormId"
 	},
 	COOKIE_NAMES: {
-		USER: "user"
+		USER: "user",
+		accsessToken: "access_token"
 	}
 };

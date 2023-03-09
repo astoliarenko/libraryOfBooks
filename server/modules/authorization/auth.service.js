@@ -2,6 +2,9 @@ const { DB } = require("../../constants");
 const { scryptHash, key } = require("../../crypto/cryptoMy");
 const constants = require("../../constants");
 const repository = require("./auth.repository");
+const { SECRET } = require("../../config");
+const jwt = require("jsonwebtoken");
+const authRepository = require("./auth.repository");
 
 class authService {
 	async registerUser(userData) {
@@ -51,7 +54,8 @@ class authService {
 			return {
 				message: `User ${credentials.username} not found`,
 				status: 404,
-				success: false
+				success: false,
+				field: 'login'
 			};
 		}
 
@@ -61,7 +65,8 @@ class authService {
 			return {
 				message: "Wrong password",
 				status: 400,
-				success: false
+				success: false,
+				field: 'password'
 			};
 		}
 
@@ -78,7 +83,8 @@ class authService {
 				success: true,
 				userInfo: {
 					userName: `${userInfo[firstName] || "Alex"} ${userInfo[lastName] || "Malex"}`,
-					roleId: user[roleId]
+					roleId: user[roleId],
+					userId: user[DB.USERS.COLUMNS.USER_ID]
 				}
 			};
 		}
@@ -89,6 +95,29 @@ class authService {
 				success: false
 			};
 		}
+	}
+
+	async cookieLogin(token) {
+		const info = jwt.verify(token, SECRET);
+		const res = {success: false};
+
+		if (info) {
+			const userInfo = await authRepository.getUserById(info.id);
+
+			if (userInfo.length) {
+				res.userInfo = userInfo[0][0];
+				res.success = true;
+			}
+			else {
+				res.message = 'User is not exist';
+			}
+
+		}
+		else {
+			res.message = 'not valid token';
+		}
+
+		return res;
 	}
 }
 
