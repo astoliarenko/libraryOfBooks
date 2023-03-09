@@ -28,8 +28,8 @@ class booksController {
 		try {
 			const books = await repository.getAllBooks();
 
-			if (books) {
-				res.json(modifyBooksData(books));
+			if (books[0].length) {
+				res.json(modifyBooksData(books[0]));
 			}
 			else {
 				res.status(400).json({
@@ -49,8 +49,8 @@ class booksController {
 		try {
 			const bookGenres = await repository.getBookGenres();
 
-			if (bookGenres) {
-				res.json(bookGenres);
+			if (bookGenres[0].length) {
+				res.json(bookGenres[0]);
 			}
 			else {
 				res.status(400).json({

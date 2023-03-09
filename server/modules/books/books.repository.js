@@ -1,12 +1,12 @@
 const db = require("../../settings/db");
-const util = require("util");
-const promisifyDbQuery = util.promisify(db.query.bind(db));
+// const util = require("util");
+// const promisifyDbQuery = util.promisify(db.query.bind(db));
 const constants = require("../../constants");
 const dbNames = constants.DB;
 
 class BooksRepository {
 	async getAllBooks() {
-		return promisifyDbQuery(`
+		return db.query(`
 			SELECT books.*, authors.*, GROUP_CONCAT(genre.${dbNames.BOOKS_GENRE.COLUMNS.ID_GENRE}) AS 'genres'
 			FROM ${dbNames.BOOKS.NAME} AS books
 			LEFT JOIN ${dbNames.AUTHORS.NAME} AS authors
@@ -18,7 +18,7 @@ class BooksRepository {
 	}
 
 	async getBookGenres() {
-		return promisifyDbQuery(`
+		return db.query(`
 			SELECT *
 			FROM ${dbNames.GENRES.NAME}
 		`);

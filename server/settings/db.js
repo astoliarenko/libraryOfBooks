@@ -1,8 +1,9 @@
-const mysql = require("mysql");
+const mysql = require("mysql2");
 
 const port = 3306;
 
-const connection = mysql.createConnection({
+const poolConfig = {
+	connectionLimit : 10,
 	// host: "127.0.0.1",
 	host: "localhost",
 	// localhost - default, можно не указывать
@@ -14,27 +15,10 @@ const connection = mysql.createConnection({
 	password: "",
 	database: "booksdb",
 	// connectTimeout: 5000
-});
+};
 
-connection.connect((err) => {
-	// eslint-disable-next-line no-console
-	if (err) return console.log("Ошибка подключения к БД!", err);
-	// eslint-disable-next-line no-console
-	return console.log(`Подключение к БД успешно! Порт БД: ${port}`);
-});
+const pool  = mysql.createPool(poolConfig);
 
-// const query = (sqlQuery) => {
-// 	return new Promise((resolve, reject) => {
-// 		db.query(sqlQuery, (err, result, fields) => {
-// 			if(err){
-// 				reject(err);	
-// 			}
-// 			resolve({result, fields});
-// 		});
-// 	});
-// }
+const promisePool = pool.promise();
 
-module.exports = connection;
-// module.exports = {
-// 	query
-// }
+module.exports = promisePool;
