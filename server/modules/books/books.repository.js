@@ -1,6 +1,4 @@
 const db = require("../../settings/db");
-// const util = require("util");
-// const promisifyDbQuery = util.promisify(db.query.bind(db));
 const constants = require("../../constants");
 const dbNames = constants.DB;
 
