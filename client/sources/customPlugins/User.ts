@@ -47,15 +47,8 @@ export default function User(
 					user = data.userInfo;
 					console.log('userInfo', user);
 					app.callEvent("app:user:login", [user]);
-				}
-				else {
-					webix.message({type: "error", text: data.message});
-				}
-				if (!data) {
-					throw new Error("Access denied");
-				}
 
-				switch (user.roleId) { /* TODO: uncomment code */
+					switch (user.roleId) { /* TODO: uncomment code */
 					// case 1:
 					// 	app.show(rolesData["1"]);
 					// 	break;
@@ -65,6 +58,13 @@ export default function User(
 					default:
 						app.show(rolesData["2"]); /* 2 - reader for test*/
 						break;
+				}
+				}
+				else {
+					webix.message({type: "error", text: data.message});
+				}
+				if (!data) {
+					throw new Error("Access denied");
 				}
 			});
 		},
