@@ -10,12 +10,12 @@
 	"main": "sources/myapp.ts",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"lint": "eslint sources/",
+		"lint": "eslint sources/**/*.ts",
 		"build": "webpack --env production",
 		"module": "webpack --env production --env module",
 		"standalone": "webpack --env production --env module --env standalone",
 		"start": "webpack-dev-server --open"
-	  },
+	},
 	"keywords": [
 		"webix",
 		"jet"
@@ -27,9 +27,12 @@
 		]
 	},
 	"devDependencies": {
+		"@typescript-eslint/eslint-plugin": "^4.14.2",
+		"@typescript-eslint/parser": "^4.4.1",
 		"css-loader": "^5.2.4",
 		"eslint": "^7.32.0",
 		"eslint-config-xbsoftware": "git+http://192.168.1.55:3000/xbsltd/eslint#v4.0.0",
+		"eslint-import-resolver-typescript": "^3.5.3",
 		"eslint-plugin-import": "^2.26.0",
 		"file-loader": "^6.2.0",
 		"husky": "^6.0.0",
