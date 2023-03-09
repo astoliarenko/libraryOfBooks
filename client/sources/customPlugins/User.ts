@@ -44,7 +44,7 @@ export default function User(
 		login(name, pass, isRemember): Promise<void> {
 			return model.login(name, pass, isRemember).then((data) => {
 				if (data.success) {
-					user = data;
+					user = data.userInfo;
 					app.callEvent("app:user:login", [user]);
 				}
 				else {
