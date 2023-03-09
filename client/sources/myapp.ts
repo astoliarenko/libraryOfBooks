@@ -46,9 +46,9 @@ if (!BUILD_AS_MODULE) {
 
 	const setAppSettings = (app) => {
 		app.use(fetchApiService, {});
-		app.attachEvent(events.app.appGuard, (url, point, nav) => {
-			console.log('guard url', nav);
-		});
+		// app.attachEvent(events.app.appGuard, (url, point, nav) => {
+		// 	console.log('guard url', nav);
+		// });
 
 		const setAppInstanceForModels = (app: IJetApp) => {
 			const models = [

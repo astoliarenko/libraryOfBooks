@@ -5,6 +5,7 @@ import booksCollection from "../../collections/booksDataCollections";
 import booksColumns from "../../data/booksColumns";
 import DatatableView from "../commonView/datatable";
 import BooksModel from "models/books";
+import { wrapInScrollView } from "../../helpers/usefulFunctions";
 
 export default class OrderBookView extends JetView {
 	dt: any;
@@ -23,6 +24,7 @@ export default class OrderBookView extends JetView {
 			],
 			// data: booksCollection,
 			select: true,
+			minWidth: 500,
 			on: {
 				onAfterSelect: (data) => {
 					const fullInfo = this.$$("fullInfoId") as unknown as webix.ui.template;
@@ -101,7 +103,7 @@ export default class OrderBookView extends JetView {
 			]
 		};
 
-		return ui;
+		return wrapInScrollView('x', ui);
 	}
 
 	loadAllBooks() {
