@@ -65,17 +65,19 @@ class authController {
 
 				res.status(user.status).json({
 					message: user.message,
-					userInfo: user.userInfo
+					userInfo: user.userInfo,
+					success: user.success
 				});
 			}
 			else {
 				res.status(user.status).json({
 					message: user.message,
+					success: user.success
 				});
 			}
 		} catch (e) {
 			console.log(e);
-			res.status(400).json({ message: "Login error" });
+			res.status(400).json({ message: "Login error", success: false });
 		}
 	}
 

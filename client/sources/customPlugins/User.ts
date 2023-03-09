@@ -43,12 +43,16 @@ export default function User(
 		},
 		login(name, pass, isRemember): Promise<void> {
 			return model.login(name, pass, isRemember).then((data) => {
-				user = data;
+				if (data.success) {
+					user = data;
+					app.callEvent("app:user:login", [user]);
+				}
+				else {
+					webix.message({type: "error", text: data.message});
+				}
 				if (!data) {
 					throw new Error("Access denied");
 				}
-
-				app.callEvent("app:user:login", [user]);
 
 				switch (user.roleId) { /* TODO: uncomment code */
 					// case 1:
