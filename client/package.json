@@ -30,7 +30,7 @@
 	"devDependencies": {
 		"css-loader": "^5.2.4",
 		"eslint": "^7.32.0",
-		"eslint-config-xbsoftware": "git+https://bitbucket.org/xbsltd/eslint.git#v4.0.0",
+		"eslint-config-xbsoftware": "git+http://192.168.1.55:3000/xbsltd/eslint#v4.0.0",
 		"eslint-plugin-import": "^2.26.0",
 		"file-loader": "^6.2.0",
 		"husky": "^6.0.0",
@@ -46,9 +46,11 @@
 		"url-loader": "^4.1.1",
 		"webpack": "^5.75.0",
 		"webpack-cli": "^4.6.0",
-		"webpack-dev-server": "^3.11.2"
+		"webpack-dev-server": "^4.11.1"
 	},
 	"dependencies": {
+		"clean-webpack-plugin": "^4.0.0",
+		"copy-webpack-plugin": "^11.0.0",
 		"js-cookie": "^3.0.1",
 		"webix-jet": "^2.1.3"
 	}
