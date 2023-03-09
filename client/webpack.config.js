@@ -1,5 +1,13 @@
+const {CleanWebpackPlugin} = require("clean-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 let path = require("path");
 let webpack = require("webpack");
+
+const PATHS = {
+	DIST: "dist",
+	APP: "./sources/myapp.ts",
+	IMAGES: "./sources/img"
+};
 
 module.exports = function (env) {
 	// eslint-disable-next-line global-require
@@ -11,14 +19,16 @@ module.exports = function (env) {
 	let asmodule = !!(env && env.module === "true");
 	let standalone = !!(env && env.standalone === "true");
 
+	const removeEmpty = array => array.filter(Boolean);
+
 	let config = {
 		mode: production ? "production" : "development",
 		entry: {
-			myapp: "./sources/myapp.ts"
+			myapp: PATHS.APP
 		},
 		output: {
-			path: path.join(__dirname, "codebase"),
-			publicPath: "/codebase/",
+			path: path.join(__dirname, PATHS.DIST),
+			publicPath: "/",
 			filename: "[name].js",
 			chunkFilename: "[name].bundle.js"
 		},
@@ -30,22 +40,16 @@ module.exports = function (env) {
 				},
 				{
 					test: /\.(svg|png|jpg|gif)$/,
-					use: "url-loader?limit=25000"
+					use: "asset/inline"
 				},
 				{
-					test: /\.(less|css)$/,
-					use: [MiniCssExtractPlugin.loader, "css-loader", "less-loader"]
-				},
-				{
-					test: /\.s[ac]ss$/i,
-					use: [
-						// Creates `style` nodes from JS strings
-						"style-loader",
-						// Translates CSS into CommonJS
-						"css-loader",
-						// Compiles Sass to CSS
-						"sass-loader"
-					]
+					test: /\.(scss|css)$/,
+					use: [MiniCssExtractPlugin.loader,
+						{loader: "css-loader",
+							options: {
+								url: false
+							}
+						}, "sass-loader"]
 				}
 			]
 		},
@@ -58,7 +62,21 @@ module.exports = function (env) {
 				"jet-locales": path.resolve(__dirname, "sources/locales")
 			}
 		},
-		plugins: [
+		plugins: removeEmpty([
+			new CleanWebpackPlugin(),
+			production
+				? new CopyPlugin({
+					patterns: [
+						{from: "index.html", to: "index.html"},
+						{from: PATHS.IMAGES, to: "img/"}
+					]
+				})
+				: new CopyPlugin({
+					patterns: [
+						{from: "index.html", to: "index.html"},
+						{from: PATHS.IMAGES, to: "img/"}
+					]
+				}),
 			new MiniCssExtractPlugin({
 				filename: "[name].css"
 			}),
@@ -68,9 +86,13 @@ module.exports = function (env) {
 				PRODUCTION: production,
 				BUILD_AS_MODULE: asmodule || standalone
 			})
-		],
+		]),
 		devServer: {
-			stats: "errors-only"
+			client: {
+				logging: "error"
+			},
+			static: {directory: path.join(__dirname, PATHS.DIST)},
+			historyApiFallback: true
 		}
 	};
 
@@ -80,7 +102,7 @@ module.exports = function (env) {
 
 	if (asmodule) {
 		if (!standalone) {
-			config.externals = config.externals || {};
+			// config.externals = config.externals || {};
 			config.externals = ["webix-jet"];
 		}
 

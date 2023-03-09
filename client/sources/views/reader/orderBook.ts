@@ -77,7 +77,7 @@ export default class OrderBookView extends JetView {
 								<span><strong>Year of publishing:</strong> ${data[booksColumns.yearOfPublishing]}</span>
 							</div>
 							<div class="books-info__right-column">
-								<img src="sources/img/witcherPicture.jpg" alt="book">
+								<img src="img/witcherPicture.jpg" alt="book">
 							</div>
 						</div>
 					</div>
