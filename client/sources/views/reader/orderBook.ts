@@ -117,7 +117,5 @@ export default class OrderBookView extends JetView {
 			table.parse(books.data,  'json', true);
 			table.select(table.getFirstId());
 		}
-
-		console.log('books', books.data);
 	}
 }
