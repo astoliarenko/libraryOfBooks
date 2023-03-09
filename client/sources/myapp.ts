@@ -32,7 +32,7 @@ export default class MyApp extends JetApp {
 			{
 				model: session,
 				login: "/authorization",
-				logout: "/authorization",
+				logout: "/logout", /* TODO: change logic */
 				afterLogout: "/authorization"
 			}
 		);

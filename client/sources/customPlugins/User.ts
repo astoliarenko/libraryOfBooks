@@ -45,6 +45,7 @@ export default function User(
 			return model.login(name, pass, isRemember).then((data) => {
 				if (data.success) {
 					user = data.userInfo;
+					console.log('userInfo', user);
 					app.callEvent("app:user:login", [user]);
 				}
 				else {
@@ -78,9 +79,9 @@ export default function User(
 			// });
 			app.callEvent("app:user:logout", []);
 
-			// app.show(logout);
-
 			document.cookie = "access_token=; max-age: -1";
+
+			app.show(afterLogout);
 		}
 	};
 
@@ -100,6 +101,8 @@ export default function User(
 		if (config.public && config.public(url)) {
 			return true;
 		}
+
+		// debugger;
 
 		if (typeof user === "undefined") {
 			obj.confirm = service.getStatus(true).then(() => canNavigate(url, obj));
