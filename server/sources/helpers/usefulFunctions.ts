@@ -1,4 +1,4 @@
-function getCookie(cookieObj, name) {
+function getCookie(cookieObj: string, name: string): string | undefined {
 	let cookie = {};
 
 	cookieObj.split(";").forEach((el) => {

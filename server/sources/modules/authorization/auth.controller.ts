@@ -14,7 +14,7 @@ const generateAccessToken = (id, role) => {
 };
 
 class authController {
-	async registration(req, res) {
+	async registration(req, res): Promise<void> {
 		try {
 			const { username, password } = req.body;
 			const newUserData = await authService.registerUser({ username, password });
@@ -38,7 +38,7 @@ class authController {
 		}
 	}
 
-	async login(req, res) {
+	async login(req, res): Promise<void> {
 		try {
 			const { username, password, isRemember } = req.body;
 
@@ -74,7 +74,7 @@ class authController {
 		}
 	}
 
-	async cookieLogin(req, res) {
+	async cookieLogin(req, res): Promise<void> {
 		try {
 			const token = getCookie(req.headers.cookie, constants.TOKEN_NAMES.ACCESS_TOKEN);
 
