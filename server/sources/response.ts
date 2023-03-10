@@ -1,4 +1,4 @@
-exports.status = (values, res) => {
+export default (values, res) => {
 	const data = {
 		status: 200,
 		values

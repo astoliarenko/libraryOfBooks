@@ -1,9 +1,9 @@
 const jwt = require("jsonwebtoken");
-const {SECRET} = require("../config");
-const constants = require("../constants");
-const getCookie = require("../helpers/usefulFunctions");
+import config from "../config";
+import constants from "../constants";
+import getCookie from "../helpers/usefulFunctions";
 
-module.exports = function (roles) {
+export default function (roles) {
 	return function(req, res, next) {
 		if (req.method === "OPTIONS") {
 			next();
@@ -16,7 +16,7 @@ module.exports = function (roles) {
 				return res.status(403).json({message: "Нет доступа"})
 			}
 	
-			const {roles: userRoles} = jwt.verify(token, SECRET);
+			const {roles: userRoles} = jwt.verify(token, config.SECRET);
 			const hasRole = roles.includes(userRoles);
 
 			if (!hasRole) {

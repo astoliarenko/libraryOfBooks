@@ -1,9 +1,10 @@
 const jwt = require("jsonwebtoken");
-const { SECRET } = require("../config");
-const getCookie = require("../helpers/usefulFunctions");
-const constants = require("../constants");
+import config from "../config";
+import getCookie from "../helpers/usefulFunctions";
+const SECRET = config.SECRET;
+import constants from "../constants";
 
-module.exports = function (req, res, next) {
+export default function (req, res, next) {
 	if (req.method === "OPTIONS") {
 		next();
 	}

@@ -1,16 +1,15 @@
-const { DB } = require("../../constants");
-const jwt = require("jsonwebtoken");
-const { SECRET } = require("../../config");
-const constants = require("../../constants");
-const authService = require("./auth.service");
-const getCookie = require("../../helpers/usefulFunctions");
+import jwt from "jsonwebtoken";
+import config from "../../config";
+import constants from "../../constants";
+import authService from "./auth.service";
+import getCookie from "../../helpers/usefulFunctions";
 
 const generateAccessToken = (id, role) => {
 	const payload = {
 		id,
 		role, /* 1 role */
 	};
-	return jwt.sign(payload, SECRET, { expiresIn: "24h" });
+	return jwt.sign(payload, config.SECRET, { expiresIn: "24h" });
 	// {expiresIn: "24h"} - столько будет "жить" токен
 };
 
@@ -136,4 +135,4 @@ class authController {
 	// }
 }
 
-module.exports = new authController();
+export default new authController();

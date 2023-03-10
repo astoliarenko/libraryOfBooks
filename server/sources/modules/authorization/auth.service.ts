@@ -1,14 +1,14 @@
-const { DB } = require("../../constants");
-const { scryptHash, key } = require("../../crypto/cryptoMy");
-const constants = require("../../constants");
-const repository = require("./auth.repository");
-const { SECRET } = require("../../config");
+import constants from "../../constants";
+import { scryptHash, key } from "../../crypto/cryptoMy";
+import authRepository from "./auth.repository";
+import config from "../../config";
 const jwt = require("jsonwebtoken");
-const authRepository = require("./auth.repository");
+
+const DB = constants.DB;
 
 class authService {
 	async registerUser(userData) {
-		const user = (await repository.getUserByLogin(userData.login))[0];
+		const user = (await authRepository.getUserByLogin(userData.login))[0];
 
 		if (!user) {
 			return {
@@ -18,10 +18,10 @@ class authService {
 			};
 		}
 
-		const hashPassword = await scryptHash(password, key);
+		const hashPassword = await scryptHash(userData.password, key);
 		const defRole = DB.USERS.ROLES.READER;
 
-		const newUser = await repository.addNewUser({
+		const newUser = await authRepository.addNewUser({
 			username: userData.username,
 			password: hashPassword,
 			role: defRole
@@ -48,7 +48,7 @@ class authService {
 	}
 
 	async login(credentials) {
-		const user = (await repository.getUserByLogin(credentials.username))[0][0];
+		const user = (await authRepository.getUserByLogin(credentials.username))[0][0];
 
 		if (!user) {
 			return {
@@ -70,7 +70,7 @@ class authService {
 			};
 		}
 
-		const userInfo = (await repository.getUserById(user[DB.USERS.COLUMNS.USER_ID]))[0][0];
+		const userInfo = (await authRepository.getUserById(user[DB.USERS.COLUMNS.USER_ID]))[0][0];
 
 		if (userInfo) {
 			const firstName = constants.DB.USERS_INFO.COLUMNS.FIRST_NAME;
@@ -98,8 +98,8 @@ class authService {
 	}
 
 	async cookieLogin(token) {
-		const info = jwt.verify(token, SECRET);
-		const res = {success: false};
+		const info = jwt.verify(token, config.SECRET);
+		const res: {success: boolean, userInfo?: any, message?: string} = {success: false};
 
 		if (info) {
 			const userInfo = await authRepository.getUserById(info.id);
@@ -121,4 +121,4 @@ class authService {
 	}
 }
 
-module.exports = new authService();
+export default new authService();

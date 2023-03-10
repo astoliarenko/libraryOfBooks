@@ -1,9 +1,10 @@
-const { DB } = require("../../constants");
-const db = require("../../settings/db");
+import constants from "../../constants";
+import promisePool from "../../settings/db";
+const DB = constants.DB;
 
 class AuthorizationRepository {
 	async getUserByLogin(login) {
-		return db.query(`
+		return promisePool.query(`
 			SELECT *
 			FROM \`${DB.USERS.NAME}\`
 			WHERE \`${DB.USERS.COLUMNS.LOGIN}\` = '${login}'
@@ -11,7 +12,7 @@ class AuthorizationRepository {
 	}
 
 	async getUserById(userId) {
-		return db.query(`
+		return promisePool.query(`
 			SELECT *
 			FROM \`${DB.USERS_INFO.NAME}\`
 			WHERE \`${DB.USERS.COLUMNS.USER_ID}\` = '${userId}'
@@ -19,7 +20,7 @@ class AuthorizationRepository {
 	}
 
 	async addNewUser(userData) {
-		return db.query(`
+		return promisePool.query(`
 			INSERT INTO \`${DB.USERS.NAME}\`
 			(\`${DB.USERS.COLUMNS.LOGIN}\`, \`${DB.USERS.COLUMNS.PASSWORD}\`, \`${DB.USERS.COLUMNS.ROLE_ID}\`)
 			VALUES('${userData.username}', '${userData.password}', '${userData.role}')
@@ -27,4 +28,4 @@ class AuthorizationRepository {
 	}
 }
 
-module.exports = new AuthorizationRepository();
+export default new AuthorizationRepository();

@@ -21,4 +21,4 @@ async function scryptVerify(testString, hashAndSalt) {
 	return (await scryptHash(testString, salt)) === hashAndSalt;
 }
 
-module.exports = { scryptHash, key, scryptVerify };
+export { scryptHash, key, scryptVerify };

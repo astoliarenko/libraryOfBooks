@@ -1,4 +1,4 @@
-const repository = require("./books.repository");
+import booksRepository from "./books.repository";
 
 const modifyBooksData = (books) => {
 	if (books.length) {
@@ -26,7 +26,7 @@ class booksController {
 
 	async getBooks(req, res) {
 		try {
-			const books = await repository.getAllBooks();
+			const books = await booksRepository.getAllBooks();
 
 			if (books[0].length) {
 				res.json(modifyBooksData(books[0]));
@@ -47,7 +47,7 @@ class booksController {
 
 	async getBookGenres(req, res) {
 		try {
-			const bookGenres = await repository.getBookGenres();
+			const bookGenres = await booksRepository.getBookGenres();
 
 			if (bookGenres[0].length) {
 				res.json(bookGenres[0]);
@@ -67,4 +67,4 @@ class booksController {
 	}
 }
 
-module.exports = new booksController();
+export default new booksController();

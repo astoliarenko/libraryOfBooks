@@ -1,11 +1,11 @@
-const authRouter = require("../modules/authorization/auth.router");
-const booksRouter = require("../modules/books/books.router");
+import authRouter from "../modules/authorization/auth.router";
+import booksRouter from "../modules/books/books.router";
 // const authMiddleware = require("../middleware/authMiddleware");
 // const roleMiddleware = require("../middleware/roleMiddleware");
 // const { DB } = require("../constants");
 // const roles = DB.USERS.ROLES;
 
-module.exports = (app) => {
+export default (app: any) => {
 	// Метод app.route() позволяет создавать обработчики маршрутов, образующие цепочки,
 	// для пути маршрута. Поскольку путь указан в одном расположении, удобно создавать
 	// модульные маршруты, чтобы минимизировать избыточность и количество опечаток
@@ -22,7 +22,7 @@ module.exports = (app) => {
 	// 	roleMiddleware([roles.READER, roles.LIBRARIAN, roles.ADMIN]),
 	// 	booksController.getBooks
 	// );
-	app.route("/auth/status").get((req, res) => {
+	app.route("/auth/status").get((req: any, res: any) => {
 		res.send(true);
 	});
 

@@ -1,4 +1,4 @@
-module.exports = function getCookie(cookieObj, name) {
+function getCookie(cookieObj, name) {
 	let cookie = {};
 
 	cookieObj.split(";").forEach((el) => {
@@ -9,3 +9,5 @@ module.exports = function getCookie(cookieObj, name) {
 
 	return cookie[name];
 }
+
+export default getCookie;

@@ -1,10 +1,10 @@
-const db = require("../../settings/db");
-const constants = require("../../constants");
+import promisePool from "../../settings/db";
+import constants from "../../constants";
 const dbNames = constants.DB;
 
 class BooksRepository {
 	async getAllBooks() {
-		return db.query(`
+		return promisePool.query(`
 			SELECT books.*, authors.*, GROUP_CONCAT(genre.${dbNames.BOOKS_GENRE.COLUMNS.ID_GENRE}) AS 'genres'
 			FROM ${dbNames.BOOKS.NAME} AS books
 			LEFT JOIN ${dbNames.AUTHORS.NAME} AS authors
@@ -16,11 +16,11 @@ class BooksRepository {
 	}
 
 	async getBookGenres() {
-		return db.query(`
+		return promisePool.query(`
 			SELECT *
 			FROM ${dbNames.GENRES.NAME}
 		`);
 	}
 }
 
-module.exports = new BooksRepository();
+export default new BooksRepository();
