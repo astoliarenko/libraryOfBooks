@@ -70,7 +70,7 @@ class authService {
 			};
 		}
 
-		const userInfo = (await repository.getUserById(user[DB.USERS.COLUMNS.USER_ID]))[0];
+		const userInfo = (await repository.getUserById(user[DB.USERS.COLUMNS.USER_ID]))[0][0];
 
 		if (userInfo) {
 			const firstName = constants.DB.USERS_INFO.COLUMNS.FIRST_NAME;
