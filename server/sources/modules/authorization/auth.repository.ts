@@ -1,9 +1,15 @@
 import constants from "../../constants";
 import promisePool from "../../settings/db";
 const DB = constants.DB;
+interface userInfo {
+	id_user: number,
+	login: string,
+	password: string,
+	id_role: number
+}
 
 class AuthorizationRepository {
-	async getUserByLogin(login) {
+	async getUserByLogin(login: string): Promise<[userInfo[] | [], any[]]> {
 		return promisePool.query(`
 			SELECT *
 			FROM \`${DB.USERS.NAME}\`
@@ -11,7 +17,7 @@ class AuthorizationRepository {
 		`);
 	}
 
-	async getUserById(userId) {
+	async getUserById(userId: string): Promise<[userInfo[] | [], any[]]> {
 		return promisePool.query(`
 			SELECT *
 			FROM \`${DB.USERS_INFO.NAME}\`
@@ -19,7 +25,7 @@ class AuthorizationRepository {
 		`);
 	}
 
-	async addNewUser(userData) {
+	async addNewUser(userData: {username: string, password: string, role: number}): Promise<any> {
 		return promisePool.query(`
 			INSERT INTO \`${DB.USERS.NAME}\`
 			(\`${DB.USERS.COLUMNS.LOGIN}\`, \`${DB.USERS.COLUMNS.PASSWORD}\`, \`${DB.USERS.COLUMNS.ROLE_ID}\`)
