@@ -11,7 +11,7 @@ const formNames = {
 	passportNumber: 'passportNumber',
 	birthDate: 'birthDate',
 	address: 'address',
-	cardId: 'cardId',
+	// cardId: 'cardId',
 	login: 'login',
 	password: 'password',
 	phone1: 'phone1',
@@ -113,14 +113,14 @@ export default class RegisterWindowView extends JetView {
 							}
 						}}),
 						generatePhonenumberTextInputConfig("Телефон-4", formNames.phone4, labelWidth, {hidden: true}),
-						{
-							view: "text",
-							label: "Номер карточки",
-							name: formNames.cardId,
-							pattern: {mask:"##-##-##", allow:/[0-9]/g},
-							labelWidth,
-							required: true
-						},
+						// {
+						// 	view: "text",
+						// 	label: "Номер карточки",
+						// 	name: formNames.cardId,
+						// 	pattern: {mask:"##-##-##", allow:/[0-9]/g},
+						// 	labelWidth,
+						// 	required: true
+						// },
 						{
 							view: "text",
 							label: "Логин",
