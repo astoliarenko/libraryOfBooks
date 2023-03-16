@@ -94,47 +94,6 @@ class authController {
 			res.status(400).json({ message: "Login error", success: false });
 		}
 	}
-
-	// async getUsers(req, res) {
-	// 	try {
-	// 		const users = await promisifyDbQuery(
-	// 			`SELECT * FROM \`${DB.USERS.NAME}\``
-	// 		);
-	// 		res.json(users);
-	// 	} catch (e) {
-	// 		console.log(e);
-	// 		res.status(400).json({
-	// 			message: "get user error",
-	// 		});
-	// 	}
-	// }
-
-	// async getUserFromToken(req, res) {
-	// 	try {
-	// 		const { token } = req.body;
-
-	// 		// const token = res.headers.cookie
-	// 		const decodedData = jwt.verify(token, SECRET);
-
-	// 		// need to get firstName and lastName from users table
-	// 		// const user = await promisifyDbQuery(
-	// 		// 	`SELECT * FROM \`${DB.USERS.NAME}\` WHERE \`${DB.USERS.COLUMNS.LOGIN}\` = '${username}'`
-	// 		// );
-
-	// 		// if (!user[0]) {
-	// 		// 	return res.status(400).json({
-	// 		// 		message: `Пользователь ${username} не найден`,
-	// 		// 	});
-	// 		// }
-
-	// 		res.json(decodedData);
-	// 	} catch (e) {
-	// 		console.log(e);
-	// 		res.status(400).json({
-	// 			message: "get user from token error",
-	// 		});
-	// 	}
-	// }
 }
 
 export default new authController();
