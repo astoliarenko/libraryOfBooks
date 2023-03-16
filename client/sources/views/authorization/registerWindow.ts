@@ -1,6 +1,24 @@
 import {JetView} from "webix-jet";
 
 import constants from "../../constants";
+import { wrapInScrollView } from "../../helpers/usefulFunctions";
+import generatePhonenumberTextInputConfig from "../..//helpers/inputs";
+
+const formNames = {
+	firstName: 'firstName',
+	secondName: 'secondName',
+	thirdName: 'thirdName',
+	passportNumber: 'passportNumber',
+	birthDate: 'birthDate',
+	address: 'address',
+	cardId: 'cardId',
+	login: 'login',
+	password: 'password',
+	phone1: 'phone1',
+	phone2: 'phone2',
+	phone3: 'phone3',
+	phone4: 'phone4'
+}
 
 export default class RegisterWindowView extends JetView {
 	config() {
@@ -33,83 +51,64 @@ export default class RegisterWindowView extends JetView {
 						{
 							view: "text",
 							label: "Имя",
-							name: "firstName",
+							name: formNames.firstName,
 							labelWidth
 						},
 						{
 							view: "text",
 							label: "Фамилия",
-							name: "secondName",
+							name: formNames.secondName,
 							labelWidth
 						},
 						{
 							view: "text",
 							label: "Отчество",
-							name: "thirdName",
+							name: formNames.thirdName,
 							labelWidth
 						},
 						{
 							view: "text",
 							label: "Номер паспорта",
-							name: "thirdName",
+							name: formNames.passportNumber,
 							labelWidth
 						},
 						{
 							view: "datepicker",
 							value: "",
-							name: "DateObj",
+							name: formNames.birthDate,
 							label: "Дата рождения",
 							timepicker: false,
 							format: webix.Date.dateToStr(constants.DATE_FORMAT, false),
 							labelWidth
-						},
+						} as webix.ui.datepickerConfig,
 						{
 							view: "textarea",
 							label: "Адрес",
-							name: "address",
+							name: formNames.address,
 							labelWidth
 						},
-						{
-							view: "text",
-							label: "Телефон-1",
-							name: "phone1",
-							labelWidth
-						},
-						{
-							view: "text",
-							label: "Телефон-2",
-							name: "phone2",
-							labelWidth
-						},
-						{
-							view: "text",
-							label: "Телефон-3",
-							name: "phone3",
-							labelWidth
-						},
-						{
-							view: "text",
-							label: "Телефон-4",
-							name: "phone4",
-							labelWidth
-						},
+						generatePhonenumberTextInputConfig("Телефон-1", formNames.phone1, labelWidth),
+						generatePhonenumberTextInputConfig("Телефон-2", formNames.phone2, labelWidth),
+						generatePhonenumberTextInputConfig("Телефон-3", formNames.phone3, labelWidth),
+						generatePhonenumberTextInputConfig("Телефон-4", formNames.phone4, labelWidth),
 						{
 							view: "text",
 							label: "Номер карточки",
-							name: "number_111",
+							name: formNames.cardId,
+							pattern: {mask:"##-##-##", allow:/[0-9]/g},
 							labelWidth
 						},
 						{
 							view: "text",
 							label: "Логин",
-							name: "login",
+							name: formNames.login,
 							labelWidth
 						},
 						{
 							view: "text",
 							label: "Password",
 							type: "password",
-							name: "password",
+							name: formNames.password,
 							invalidMessage: "Ent. year between 1970 and cur.",
 							labelWidth
 						},
@@ -127,7 +126,7 @@ export default class RegisterWindowView extends JetView {
 				secondName: webix.rules.isNotEmpty,
 				number_111: webix.rules.isNotEmpty
 			}
-		};
+		} as webix.ui.formConfig;
 
 		const ui = {
 			localId: constants.AUTHORIZATION_VIEW.REGISTER.REGISTER_WINDOW_ID,
@@ -135,7 +134,7 @@ export default class RegisterWindowView extends JetView {
 			modal: true,
 			head: {localId: constants.AUTHORIZATION_VIEW.REGISTER.HEADER_ID, template: "Зарегистрировать"},
 			position: "center",
-			body: form
+			body: {...wrapInScrollView('y', form), minHeight: 400}
 		};
 
 		return ui;
