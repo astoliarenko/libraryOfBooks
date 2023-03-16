@@ -48,9 +48,9 @@ class authService {
 	}
 
 	async login(credentials) {
-		const user = (await authRepository.getUserByLogin(credentials.username))[0][0];
+		const userCredentials = (await authRepository.getUserByLogin(credentials.username))[0][0];
 
-		if (!user) {
+		if (!userCredentials) {
 			return {
 				message: `User ${credentials.username} not found`,
 				status: 404,
@@ -61,7 +61,7 @@ class authService {
 
 		const hashPassword = await scryptHash(credentials.password, key);
 
-		if (hashPassword !== user.password) {
+		if (hashPassword !== userCredentials.password) {
 			return {
 				message: "Wrong password",
 				status: 400,
@@ -70,21 +70,17 @@ class authService {
 			};
 		}
 
-		const userInfo = (await authRepository.getUserById(user[DB.USERS.COLUMNS.USER_ID]))[0][0];
+		const userInfo = (await authRepository.getUserById(userCredentials.id_user))[0][0];
 
 		if (userInfo) {
-			const firstName = constants.DB.USERS_INFO.COLUMNS.FIRST_NAME;
-			const lastName = constants.DB.USERS_INFO.COLUMNS.LAST_NAME;
-			const roleId = constants.DB.USERS.COLUMNS.ROLE_ID;
-
 			return {
 				message: "Successfull login",
 				status: 200,
 				success: true,
 				userInfo: {
-					userName: `${userInfo[firstName] || "Alex"} ${userInfo[lastName] || "Malex"}`,
-					roleId: user[roleId],
-					userId: user[DB.USERS.COLUMNS.USER_ID]
+					userName: `${userInfo.first_name || "Alex"} ${userInfo.last_name || "Malex"}`,
+					roleId: userCredentials.id_role,
+					userId: userCredentials.id_user
 				}
 			};
 		}
@@ -102,10 +98,13 @@ class authService {
 		const res: {success: boolean, userInfo?: any, message?: string} = {success: false};
 
 		if (info) {
-			const userInfo = await authRepository.getUserById(info.id);
+			const userCredentials = (await authRepository.getUserById(info.id))[0][0];
 
-			if (userInfo.length) {
-				res.userInfo = userInfo[0][0];
+			if (userCredentials) {
+				res.userInfo = {
+					roleId: info.role,
+					userName: `${userCredentials.first_name} ${userCredentials.last_name}`
+				}
 				res.success = true;
 			}
 			else {

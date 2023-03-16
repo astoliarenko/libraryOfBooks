@@ -17,7 +17,8 @@ export default class ReaderView extends JetView {
 	header: any;
 
 	config() {
-		this.userName = this.app.getService("user").getUser()?.userName;
+		const user = this.app.getService("user").getUser();
+		this.userName = user.first_name + user.last_name ;
 
 		const sidebarConfig = {
 			listMenu: {
