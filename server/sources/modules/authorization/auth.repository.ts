@@ -20,15 +20,15 @@ class AuthorizationRepository {
 		return promisePool.query(`
 			SELECT *
 			FROM ${DB.USERS.NAME}
-			WHERE '${DB.USERS.COLUMNS.LOGIN}' = '${login}'
+			WHERE ${DB.USERS.COLUMNS.LOGIN} = '${login}'
 		`);
 	}
 
 	async getUserById(userId: number): Promise<[userInfo[] | [], any[]]> {
 		return promisePool.query(`
 			SELECT *
-			FROM \`${DB.USERS_INFO.NAME}\`
-			WHERE \`${DB.USERS.COLUMNS.USER_ID}\` = '${userId}'
+			FROM ${DB.USERS_INFO.NAME}
+			WHERE ${DB.USERS.COLUMNS.USER_ID} = '${userId}'
 		`);
 	}
 
