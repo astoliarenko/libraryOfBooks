@@ -53,6 +53,8 @@ class authController {
 					user.userInfo.roleId
 				);
 
+				delete user.userInfo.userId;
+
 				res.cookie(
 					constants.TOKEN_NAMES.ACCESS_TOKEN,
 					token,
