@@ -3,21 +3,21 @@ import {JetView} from "webix-jet";
 import constants from "../../constants";
 import { wrapInScrollView } from "../../helpers/usefulFunctions";
 import generatePhonenumberTextInputConfig from "../..//helpers/inputs";
+import AuthModel from "../../models/authModel";
 
 const formNames = {
-	firstName: 'firstName',
-	secondName: 'secondName',
-	thirdName: 'thirdName',
-	passportNumber: 'passportNumber',
-	birthDate: 'birthDate',
+	firstName: 'first_name',
+	secondName: 'last_name',
+	thirdName: 'third_name',
+	passportNumber: 'passport_number',
+	birthDate: 'birthday',
 	address: 'address',
-	// cardId: 'cardId',
 	login: 'login',
 	password: 'password',
-	phone1: 'phone1',
-	phone2: 'phone2',
-	phone3: 'phone3',
-	phone4: 'phone4'
+	phone1: 'phone_1',
+	phone2: 'phone_2',
+	phone3: 'phone_3',
+	phone4: 'phone_4'
 }
 
 export default class RegisterWindowView extends JetView {
@@ -180,7 +180,7 @@ export default class RegisterWindowView extends JetView {
 							btnRegisterNewUser,
 							{},
 							btnCancel
-					]
+						]
 					}
 				]
 			}
@@ -194,12 +194,30 @@ export default class RegisterWindowView extends JetView {
 	}
 
 	// eslint-disable-next-line consistent-return
-	registerNewUser() {
+	async registerNewUser() {
 		// eslint-disable-next-line no-console
 		console.log("register new user");
 
-		const form = this.$$form;
-		const values = form.getValues();
+		const authModel = AuthModel.getInstance();
+
+		// const form = this.$$form;
+		// const values = form.getValues();
+		const mockValues = {
+			first_name: 'Alex',
+			last_name: 'Malex',
+			passport_number: '1111111111',
+			birthday: '2000-01-01',
+			phone_1: '375331112233',
+			phone_2: '375331112233',
+			login: 'librarian',
+			password: 'librarian'
+		}
+
+		const res = await authModel.registrationNewUser(mockValues);
+
+		if (res.success) {
+			const {login, password} = res.data;
+		}
 
 		this.hideWindow();
 	}

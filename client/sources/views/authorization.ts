@@ -4,6 +4,7 @@ import constants from "../constants";
 import rolesData from "../data/rolesData";
 import RegisterWindowView from "./authorization/registerWindow";
 import { getCookieItem } from "../helpers/storages/localAndSessionStorage";
+import AuthModel from "../models/authModel";
 
 export default class AutorizationView extends JetView {
 	isRememberCredits: boolean;
@@ -103,7 +104,7 @@ export default class AutorizationView extends JetView {
 		return this.$$(constants.AUTHORIZATION_VIEW.VIEW_IDS.FORM_ID) as unknown as webix.ui.form;
 	}
 
-	authorizeUser() {
+	async authorizeUser() {
 		const form = this.$$form();
 
 		const user = this.app.getService("user");
@@ -118,6 +119,10 @@ export default class AutorizationView extends JetView {
 			username: formValues.login,
 			password: formValues.password
 		};
+
+		const authModel = AuthModel.getInstance();
+
+		// authModel.loginUser();
 
 		user.login(data.username, data.password, this.isRememberCredits)
 			.then(field => {

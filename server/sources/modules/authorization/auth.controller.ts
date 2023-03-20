@@ -16,8 +16,7 @@ const generateAccessToken = (id, role) => {
 class authController {
 	async registration(req, res): Promise<void> {
 		try {
-			const { username, password } = req.body;
-			const newUserData = await authService.registerUser({ username, password });
+			const newUserData = await authService.registerUser(req.body);
 
 			if (newUserData.success) {
 				res.status(newUserData.status).json({

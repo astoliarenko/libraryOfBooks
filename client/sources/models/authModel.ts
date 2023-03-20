@@ -46,7 +46,7 @@ export default class AuthModel extends BaseModel {
         return userInfo?.isSuperAdmin;
     }
 
-    async loginUser(body) {
+    async loginUser(body: {username: string, password: string, isRemember: boolean}) {
         return this.handleRequestResponse(
             postRequestOptions({path: '/auth/login', body}),
             body,
@@ -121,6 +121,27 @@ export default class AuthModel extends BaseModel {
                 this.app.callEvent(events.app.refreshTokenError, [true]);
                 return response;
             }},
+            'logout'
+        );
+    }
+
+    async registrationNewUser(body): Promise<IQueryResult> {
+        return this.handleRequestResponse(
+            postRequestOptions({path: '/auth/registration', body}),
+            body,
+            {201: (response, result: IQueryResult) => {
+                result.success = true;
+                result.data = response.data;
+
+                return result;
+            },
+            400: (response, result: IQueryResult) => {
+                result.success = false;
+                result.data = response.data;
+
+                return result;
+            }
+        },
             'logout'
         );
     }

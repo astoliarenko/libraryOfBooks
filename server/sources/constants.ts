@@ -33,9 +33,18 @@ export default {
 		USERS_INFO: {
 			NAME: "users_info",
 			COLUMNS: {
-				TITLE: "book_title",
+				USER_ID: "id_user",
 				FIRST_NAME: "first_name",
-				LAST_NAME: "last_name"
+				LAST_NAME: "last_name",
+				THIRD_NAME: "third_name",
+				PASSPORT: "passport_number",
+				BIRTH_DAY: "birthday",
+				ADRESS: "address",
+				CARD_ID: "card_id",
+				PHONE_1: "phone_1",
+				PHONE_2: "phone_2",
+				PHONE_3: "phone_3",
+				PHONE_4: "phone_4"		
 			}
 		},
 		AUTHORS: {

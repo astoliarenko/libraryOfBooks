@@ -4,8 +4,37 @@ const DB = constants.DB;
 interface userInfo {
 	id_user: number,
 	first_name: string,
+	third_name: string | null,
 	last_name: string,
-	passport_number: number
+	passport_number: number,
+	birthday: string,
+	adress: string,
+	card_id: number | null,
+	phone_1: string | null,
+	phone_2: string | null,
+	phone_3: string | null,
+	phone_4: string | null,
+}
+
+interface userInfoWithCreds extends userInfo {
+	login: string,
+	password: string,
+}
+
+interface newUserInfo {
+	first_name: string,
+	third_name?: string | null,
+	last_name: string,
+	passport_number: number,
+	birthday?: string,
+	adress?: string,
+	phone_1?: string | null,
+	phone_2?: string | null,
+	phone_3?: string | null,
+	phone_4?: string | null,
+	login: string,
+	password: string,
+	id_role: number
 }
 
 interface userCredentials {
@@ -24,6 +53,15 @@ class AuthorizationRepository {
 		`);
 	}
 
+	async getAllUsers(): Promise<[userInfoWithCreds[] | [], any[]]> {
+		return promisePool.query(`
+			SELECT usersCreds.*, usersInfo.*
+			FROM ${DB.USERS.NAME} AS usersCreds
+			LEFT JOIN ${DB.USERS_INFO.NAME} AS usersInfo
+			ON usersCreds.${DB.USERS.COLUMNS.USER_ID} = usersInfo.${DB.USERS_INFO.COLUMNS.USER_ID}
+		`);
+	}
+
 	async getUserById(userId: number): Promise<[userInfo[] | [], any[]]> {
 		return promisePool.query(`
 			SELECT *
@@ -32,12 +70,30 @@ class AuthorizationRepository {
 		`);
 	}
 
-	async addNewUser(userData: {username: string, password: string, role: number}): Promise<any> {
-		return promisePool.query(`
-			INSERT INTO \`${DB.USERS.NAME}\`
-			(\`${DB.USERS.COLUMNS.LOGIN}\`, \`${DB.USERS.COLUMNS.PASSWORD}\`, \`${DB.USERS.COLUMNS.ROLE_ID}\`)
-			VALUES('${userData.username}', '${userData.password}', '${userData.role}')
+	async addNewUser(userData: newUserInfo): Promise<[userInfo[] | [], any[]] | null> {
+		const {login, password, id_role, ...restUserInfo} = userData;
+		const newUser = await promisePool.query(`
+			INSERT INTO ${DB.USERS.NAME}
+			(${DB.USERS.COLUMNS.LOGIN}, ${DB.USERS.COLUMNS.PASSWORD}, ${DB.USERS.COLUMNS.ROLE_ID})
+			VALUES('${login}', '${password}', '${id_role}')
 		`);
+
+		if (newUser[0][0].length) {
+			const userInfo = {...restUserInfo, id_user: newUser.id_user};
+			const keys = Object.keys(userInfo);
+			const values = Object.values(userInfo);
+
+			const colNamesStr = `${keys.join(', ')}`;
+			const valuesStr = `'${values.join("', '")}'`;
+
+			return promisePool.query(`
+				INSERT INTO ${DB.USERS_INFO.NAME}
+				(${colNamesStr})
+				VALUES(${valuesStr})
+			`);
+		}
+
+		return null;
 	}
 }
 

@@ -6,25 +6,63 @@ const jwt = require("jsonwebtoken");
 
 const DB = constants.DB;
 
-class authService {
-	async registerUser(userData) {
-		const user = (await authRepository.getUserByLogin(userData.login))[0];
+interface userInfo {
+	login: string,
+	password: string,
+	first_name: string,
+	last_name: string,
+	third_name?: string,
+	birthday?: string,
+	adress?: string,
+	passport_number: number,
+	phoneNumbers: string[]
+}
 
-		if (!user) {
+class authService {
+	async registerUser(userData: userInfo) {
+		const {phoneNumbers, ...userDataCopy} = userData;
+		const user = (await authRepository.getUserByLogin(userData.login))[0][0];
+
+		if (user) {
 			return {
-				message: "User with the same name already exists",
+				message: "User with the same login already exists",
 				status: 400,
+				field: 'login',
 				success: false
 			};
+		}
+
+		const users = (await authRepository.getAllUsers())[0];
+
+		if (users.length) {
+			const userIsUnique = !users.some((userInfo: any) => {
+				return userInfo.passport_number === userData.passport_number;
+			});
+
+			if (!userIsUnique) {
+				return {
+					message: "User with the same passport already registered",
+					status: 400,
+					field: 'passport',
+					success: false
+				};
+			}
 		}
 
 		const hashPassword = await scryptHash(userData.password, key);
 		const defRole = DB.USERS.ROLES.READER;
 
+		const phones = {};
+
+		phoneNumbers.forEach((number, index) => {
+			phones[`phone_${index + 1}`] = number;
+		});
+
 		const newUser = await authRepository.addNewUser({
-			username: userData.username,
+			...userDataCopy,
 			password: hashPassword,
-			role: defRole
+			id_role: defRole,
+			...phones
 		});
 
 		if (newUser) {
@@ -33,8 +71,8 @@ class authService {
 				status: 201,
 				success: true,
 				userInfo: {
-					username: newUser.userName,
-					role: newUser.role
+					userName: `${newUser[0][0].first_name} ${newUser[0][0].last_name}`,
+					roleId: defRole,
 				}
 			};
 		}
@@ -47,7 +85,7 @@ class authService {
 		}
 	}
 
-	async login(credentials) {
+	async login(credentials: {username: string, password: string}) {
 		const userCredentials = (await authRepository.getUserByLogin(credentials.username))[0][0];
 
 		if (!userCredentials) {
@@ -93,7 +131,7 @@ class authService {
 		}
 	}
 
-	async cookieLogin(token) {
+	async cookieLogin(token: string) {
 		const info = jwt.verify(token, config.SECRET);
 		const res: {success: boolean, userInfo?: any, message?: string} = {success: false};
 
