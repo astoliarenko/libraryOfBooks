@@ -61,7 +61,6 @@ export default function User(
 		},
 		async login(username: string, password: string, isRemember: boolean): Promise<IQueryResult | void> {
 			const res = await model.loginUser({username, password, isRemember});
-			debugger;
 
 			if (res.success) {
 				loginUser(res.data);
