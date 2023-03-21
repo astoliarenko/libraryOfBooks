@@ -3,7 +3,6 @@ import {JetApp, EmptyRouter, HashRouter} from "webix-jet";
 import User from "./customPlugins/User";
 import "./styles/app.css";
 import "./styles/datatable.scss";
-import session from "./models/session";
 import fetchApiService from "models/fetchApiService";
 import { events } from "./helpers/constants/commonConst";
 import AuthModel from "models/authModel";
@@ -30,7 +29,6 @@ export default class MyApp extends JetApp {
 		this.use(
 			User,
 			{
-				model: session,
 				login: "/authorization",
 				logout: "/logout", /* TODO: change logic */
 				afterLogout: "/authorization"

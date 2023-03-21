@@ -85,7 +85,14 @@ class authService {
 		}
 	}
 
-	async login(credentials: {username: string, password: string}) {
+	async login(credentials: {username: string, password: string}): Promise<{
+			success: boolean,
+			message: string,
+			status: number,
+			field?: string,
+			userInfo?: {userName: string, roleId: number, userId: number}
+		}>
+	{
 		const userCredentials = (await authRepository.getUserByLogin(credentials.username))[0][0];
 
 		if (!userCredentials) {
@@ -102,7 +109,7 @@ class authService {
 		if (hashPassword !== userCredentials.password) {
 			return {
 				message: "Wrong password",
-				status: 400,
+				status: 422,
 				success: false,
 				field: 'password'
 			};
@@ -116,7 +123,7 @@ class authService {
 				status: 200,
 				success: true,
 				userInfo: {
-					userName: `${userInfo.first_name || "Alex"} ${userInfo.last_name || "Malex"}`,
+					userName: `${userInfo.first_name || "Uknown"} ${userInfo.last_name || "Uknown"}`,
 					roleId: userCredentials.id_role,
 					userId: userCredentials.id_user
 				}
