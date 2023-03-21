@@ -23,12 +23,12 @@ export default class AuthModel extends BaseModel {
         return AuthModel.instance;
     }
 
-    private status() {
+    status() {
         return webix.ajax().get(`${constants.URLs.SERVER}auth/status`)
 		    .then(res => res.json());
     }
 
-    private loginUser(body: {username: string, password: string, isRemember: boolean}) {
+    loginUser(body: {username: string, password: string, isRemember: boolean}) {
         return this.handleRequestResponse(
             postRequestOptions({path: 'auth/login', body}),
             body,
@@ -69,7 +69,7 @@ export default class AuthModel extends BaseModel {
         );
     }
 
-    async cookieLogin() {
+    cookieLogin() {
         return	fetch(`${constants.URLs.SERVER}auth/login`, {
             method: "GET",
             // mode: 'no-cors', // no-cors, *cors, same-origin
