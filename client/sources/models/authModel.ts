@@ -23,9 +23,9 @@ export default class AuthModel extends BaseModel {
         return AuthModel.instance;
     }
 
-    status() {
-        return webix.ajax().get(`${constants.URLs.SERVER}auth/status`)
-		    .then(res => res.json());
+    async status() {
+        const res = await webix.ajax().get(`${constants.URLs.SERVER}auth/status`);
+        return res.json();
     }
 
     loginUser(body: {username: string, password: string, isRemember: boolean}) {
@@ -36,8 +36,7 @@ export default class AuthModel extends BaseModel {
                 200: (response, result: IQueryResult) => {
                     result.success = true;
                     result.data = {
-                        userInfo: response.userInfo,
-                        message: response.message
+                        userInfo: response.data.userInfo
                     };
                     return result;
                 },
@@ -45,16 +44,16 @@ export default class AuthModel extends BaseModel {
                     result.success = false;
                     result.data = {
                         message: response.data.message,
-                        field: response.data.field
                     }
+                    result.errorFields = [response.data.field];
                     return result;
                 },
                 422: (response, result: IQueryResult) => {
                     result.success = false;
                     result.data = {
                         message: response.data.message,
-                        field: response.data.field
                     }
+                    result.errorFields = [response.data.field];
                     return result;
                 },
                 500: (response, result: IQueryResult) => {
