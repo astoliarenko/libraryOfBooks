@@ -94,15 +94,11 @@ class authController {
 		try {
 			const reqCookies = req.headers.cookie;
 
-			console.log('reqCookies', reqCookies);
-
 			if (!reqCookies) {
 				res.status(400).json(false);
 			}
 			else {
 				const token = getCookie(reqCookies, constants.TOKEN_NAMES.ACCESS_TOKEN);
-
-				console.log('token', token === '');
 	
 				if (token) {
 					const userInfo = await authService.cookieLogin(token);
