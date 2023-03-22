@@ -25,7 +25,7 @@ export default class AuthModel extends BaseModel {
 
     public loginUser(body: {username: string, password: string, isRemember: boolean}) {
         return this.handleRequestResponse(
-            postRequestOptions({path: 'auth/login', body}),
+            postRequestOptions({path: '/auth/login', body}),
             body,
             {
                 200: (response, result: IQueryResult) => {

@@ -53,7 +53,7 @@ export default function fetchApiService(app: IJetApp): void {
     const service = {
         getAPIUrl(): string {
             // return `http/api`;
-            return "http://localhost:3500/";
+            return "http://localhost:3500";
         },
         async fetchAPI(options): Promise<{data?: any, statusCode: number}> {
             let header;
