@@ -92,20 +92,32 @@ class authController {
 
 	async cookieLogin(req, res): Promise<void> {
 		try {
-			const token = getCookie(req.headers.cookie, constants.TOKEN_NAMES.ACCESS_TOKEN);
+			const reqCookies = req.headers.cookie;
 
-			if (token) {
-				const userInfo = await authService.cookieLogin(token);
-				if (userInfo.success) {
-					res.status(200).json(userInfo);
+			console.log('reqCookies', reqCookies);
+
+			if (!reqCookies) {
+				res.status(400).json(false);
+			}
+			else {
+				const token = getCookie(reqCookies, constants.TOKEN_NAMES.ACCESS_TOKEN);
+
+				console.log('token', token === '');
+	
+				if (token) {
+					const userInfo = await authService.cookieLogin(token);
+					if (userInfo.success) {
+						res.status(200).json(userInfo);
+					}
+					else {
+						res.status(400).json(userInfo);
+					}
 				}
-				else {
-					res.status(400).json(userInfo);
-				}
+				else res.status(400).json(false);
 			}
 		} catch (e) {
 			console.log(e);
-			res.status(400).json({ message: "Login error", success: false });
+			res.status(400).json(false);
 		}
 	}
 }
