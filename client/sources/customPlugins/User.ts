@@ -59,6 +59,10 @@ export default function User(
 				.then((res) => {
 					if (res.success) {
 						user = res.userInfo;
+						return true;
+					}
+					else {
+						user = null;
 					}
 				})
 				.catch(() => null);
@@ -114,10 +118,15 @@ export default function User(
 		}
 
 		if (typeof user === "undefined") {
-			obj.confirm = service.getStatus(true).then(() => canNavigate(url, obj));
+			obj.confirm = service.getStatus(true).then((res) => {
+				canNavigate(url, obj);
+				return true;
+			});
 		}
 
-		return canNavigate(url, obj);
+		canNavigate(url, obj);
+
+		return true;
 	});
 
 	if (ping) {
