@@ -55,9 +55,13 @@ export default function User(
 				return user !== null;
 			}
 
-			return model.status().catch(() => null).then((data) => {
-				user = data;
-			});
+			return model.cookieLogin()
+				.then((res) => {
+					if (res.success) {
+						user = res.userInfo;
+					}
+				})
+				.catch(() => null);
 		},
 		async login(username: string, password: string, isRemember: boolean): Promise<IQueryResult | void> {
 			const res = await model.loginUser({username, password, isRemember});
