@@ -4,7 +4,7 @@
 /**
 * @constant {object} events - list of global events
 */
-export const events = {
+const events = {
     app: {
         refreshTokenError: 'app:refreshTokenError',
         appGuard: 'app:guard',
@@ -16,4 +16,17 @@ export const events = {
 /**
 * @constant {object} globalIds - list of global ids
 */
-export const globalIds = {};
+const globalIds = {};
+
+/**
+* @constant {object} globalIds - list of global ids
+*/
+const formInputs = {
+    phoneNumberLength: 12
+};
+
+export {
+    events,
+    globalIds,
+    formInputs
+}
