@@ -40,19 +40,18 @@ class authController {
 	async login(req, res): Promise<void> {
 		try {
 			const { username, password, isRemember } = req.body;
+			let result;
 
-			const user = await authService.login({
+			const loginRes = await authService.login({
 				username,
 				password
 			});
 
-			if (user.success) {
+			if (loginRes.success) {
 				const token = generateAccessToken(
-					user.userInfo.userId,
-					user.userInfo.roleId
+					loginRes.userInfo.userId,
+					loginRes.userInfo.roleId
 				);
-
-				delete user.userInfo.userId;
 
 				res.cookie(
 					constants.TOKEN_NAMES.ACCESS_TOKEN,
@@ -66,31 +65,55 @@ class authController {
 						}
 						: {}
 				);
+
+				result = {
+					message: loginRes.message,
+					success: loginRes.success,
+					userInfo: {
+						userName: loginRes.userInfo.userName,
+						roleId: loginRes.userInfo.roleId
+					}
+				};
+			}
+			else {
+				result = {
+					message: loginRes.message,
+					success: false,
+					field: loginRes.field
+				}
 			}
 
-			res.status(user.status).json(user);
+			res.status(loginRes.status).json(result);
 		} catch (e) {
 			console.log(e);
-			res.status(400).json({ message: "Login error", success: false });
+			res.status(500).json({ message: "Login error", success: false });
 		}
 	}
 
 	async cookieLogin(req, res): Promise<void> {
 		try {
-			const token = getCookie(req.headers.cookie, constants.TOKEN_NAMES.ACCESS_TOKEN);
+			const reqCookies = req.headers.cookie;
 
-			if (token) {
-				const userInfo = await authService.cookieLogin(token);
-				if (userInfo.success) {
-					res.status(200).json(userInfo);
+			if (!reqCookies) {
+				res.status(400).json(false);
+			}
+			else {
+				const token = getCookie(reqCookies, constants.TOKEN_NAMES.ACCESS_TOKEN);
+	
+				if (token) {
+					const userInfo = await authService.cookieLogin(token);
+					if (userInfo.success) {
+						res.status(200).json(userInfo);
+					}
+					else {
+						res.status(400).json(userInfo);
+					}
 				}
-				else {
-					res.status(400).json(userInfo);
-				}
+				else res.status(400).json(false);
 			}
 		} catch (e) {
 			console.log(e);
-			res.status(400).json({ message: "Login error", success: false });
+			res.status(400).json(false);
 		}
 	}
 }

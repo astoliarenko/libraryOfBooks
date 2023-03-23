@@ -16,14 +16,17 @@ export default class OrderBookView extends JetView {
 
 		const dtConfig = {
 			columns: [
-				{ id: booksColumns.title, header: "", width: 50, sort: "string", fillspace: true },
-				{ id: booksColumns.author, header: { content: "masterCheckbox", contentId: "mc1" }, width: 50, template: "{common.checkbox()}" },
+				{ id: "order", header: { content: "masterCheckbox", contentId: "mc1" }, width: 50, template: "{common.checkbox()}" },
+				{ id: booksColumns.title, header: "Title", minWidth: 150, sort: "string", fillspace: true },
+				{ id: booksColumns.author, header: "Author", minWidth: 150, sort: "string", fillspace: true },
 				{ id: booksColumns.avalibleCopies, header: "Copies", width: 100, sort: "string" },
-				{ id: booksColumns.genres, header: "Genres", width: 150 },
-				{ id: booksColumns.pages, header: "Pages", width: 100, sort: "int" }
+				{ id: booksColumns.genres, header: "Genres", minWidth: 150, fillspace: true },
+				{ id: booksColumns.pages, header: "Pages", wminWidthidth: 100, sort: "int", fillspace: true }
 			],
 			// data: booksCollection,
 			select: true,
+			tooltip: true,
+			scrollX: true,
 			minWidth: 500,
 			on: {
 				onAfterSelect: (data) => {

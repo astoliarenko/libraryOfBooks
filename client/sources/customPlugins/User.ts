@@ -1,12 +1,13 @@
 import { IJetApp } from "webix-jet";
 import rolesData from "../data/rolesData";
+import AuthModel from "../models/authModel";
+import IQueryResult from "../interfaces/IQueryResult";
 
 interface UserConfig {
 	login: string,
 	logout: string,
 	afterLogout?: string,
 	ping?: number,
-	model: any,
 	user?: any,
 	public?: any
 }
@@ -20,7 +21,7 @@ export default function User(
 	const logout = config.logout;
 	const afterLogout = config.afterLogout;
 	const ping = config.ping || 5 * 60 * 1000;
-	const model = config.model;
+	const model = AuthModel.getInstance();
 	let user = config.user;
 
 	// type BooleanOrPromise<T extends true | false | undefined> = T extends true
@@ -54,23 +55,26 @@ export default function User(
 				return user !== null;
 			}
 
-			return model.status().catch(() => null).then((data) => {
-				user = data;
-			});
+			return model.cookieLogin()
+				.then((res) => {
+					if (res.success) {
+						user = res.userInfo;
+						return true;
+					}
+					else {
+						user = null;
+					}
+				})
+				.catch(() => null);
 		},
-		login(name, pass, isRemember): Promise<void> {
-			return model.login(name, pass, isRemember).then((data) => {
-				if (data.success) {
-					loginUser(data);
-				}
-				else {
-					webix.message({type: "error", text: data.message});
-					return data.field;
-				}
-				if (!data) {
-					throw new Error("Access denied");
-				}
-			});
+		async login(username: string, password: string, isRemember: boolean): Promise<IQueryResult | void> {
+			const res = await model.loginUser({username, password, isRemember});
+
+			if (res.success) {
+				loginUser(res.data);
+			}
+
+			return res;
 		},
 		cookieLogin() {
 			return model.cookieLogin().then((data) => {
@@ -87,13 +91,7 @@ export default function User(
 		},
 		logout() {
 			user = null;
-			// return model.logout().then((res) => {
-			// 	app.callEvent("app:user:logout", []);
 
-			// 	document.cookie = "access_token=; max-age: -1";
-
-			// 	return res;
-			// });
 			app.callEvent("app:user:logout", []);
 
 			document.cookie = "access_token=; max-age: -1";
@@ -119,13 +117,16 @@ export default function User(
 			return true;
 		}
 
-		// debugger;
-
 		if (typeof user === "undefined") {
-			obj.confirm = service.getStatus(true).then(() => canNavigate(url, obj));
+			obj.confirm = service.getStatus(true).then((res) => {
+				canNavigate(url, obj);
+				return true;
+			});
 		}
 
-		return canNavigate(url, obj);
+		canNavigate(url, obj);
+
+		return true;
 	});
 
 	if (ping) {

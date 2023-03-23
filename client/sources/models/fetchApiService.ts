@@ -2,7 +2,7 @@ import IPostRequestOptions from './IFetchApiService';
 import { IJetApp } from 'webix-jet';
 
 interface IFetchOptions {
-    method: string, headers: {string: string}, mode: RequestMode, body?: string
+    method: string, headers: {string: string}, mode: RequestMode, body?: string, credentials?: RequestCredentials
 }
 
 interface IReqOptions {
@@ -53,7 +53,7 @@ export default function fetchApiService(app: IJetApp): void {
     const service = {
         getAPIUrl(): string {
             // return `http/api`;
-            return "http://localhost:3500/";
+            return "http://localhost:3500";
         },
         async fetchAPI(options): Promise<{data?: any, statusCode: number}> {
             let header;
@@ -73,7 +73,8 @@ export default function fetchApiService(app: IJetApp): void {
             let fetchOptions: IFetchOptions = {
                 method: queryMethod,
                 headers: header,
-                mode: 'cors'
+                mode: 'cors',
+                credentials: 'include', // omit, same-origin*
             };
 
             if (body) {

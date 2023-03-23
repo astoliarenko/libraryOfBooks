@@ -117,30 +117,26 @@ export default class AutorizationView extends JetView {
 
 		const data = {
 			username: formValues.login,
-			password: formValues.password
+			password: formValues.password,
+			isRemember: this.isRememberCredits
 		};
 
-		const authModel = AuthModel.getInstance();
+		const res = await user.login(data.username, data.password, this.isRememberCredits);
 
-		// authModel.loginUser();
+		if (!res.success) {
+			const form = this.$$form();
+			const errorField = res.errorFields[0];
 
-		user.login(data.username, data.password, this.isRememberCredits)
-			.then(field => {
-				if (field) {
-					const form = this.$$form();
-
-					if (field === 'login') {
-						form.markInvalid(field, 'Wrong username');
-					}
-					else if (field === 'password') {
-						form.markInvalid(field, 'Wrong password');
-					}
-				}
-			})
-			.catch((e) => {
-				// eslint-disable-next-line no-console
-				console.log(e);
-			});
+			if (errorField === 'login') {
+				form.markInvalid(errorField, 'Wrong username');
+			}
+			else if (errorField === 'password') {
+				form.markInvalid(errorField, 'Wrong password');
+			}
+			else {
+				webix.message({text: res.data.message, type: 'error'});
+			}
+		}
 	}
 
 	clearForm() {
