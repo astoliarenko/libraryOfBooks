@@ -37,6 +37,7 @@ class authController {
 			else {
 				res.status(newUserData.status).json({
 					message: newUserData.message,
+					field: newUserData.field
 				});
 			}
 		} catch (e) {

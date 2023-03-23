@@ -1,9 +1,11 @@
 import {JetView} from "webix-jet";
 
 import constants from "../../constants";
-import { wrapInScrollView } from "../../helpers/usefulFunctions";
+import { formInputs } from "../../helpers/constants/commonConst";
+import { wrapInScrollView, getDate } from "../../helpers/usefulFunctions";
 import generatePhonenumberTextInputConfig from "../../helpers/inputs";
 import AuthModel from "../../models/authModel";
+import ProgressBar from "../../helpers/progressBar";
 
 const formNames = {
 	firstName: 'first_name',
@@ -18,10 +20,16 @@ const formNames = {
 	phone2: 'phone_2',
 	phone3: 'phone_3',
 	phone4: 'phone_4'
-}
+};
+const phoneNumberLength = formInputs.phoneNumberLength;
 
 export default class RegisterWindowView extends JetView {
+	private progressBar: ProgressBar;
+
+	private formView: webix.ui.form;
+
 	config() {
+		const root = this;
 		const btnWidth = 150;
 		const labelWidth = 160;
 		const formWidth = 400;
@@ -72,8 +80,13 @@ export default class RegisterWindowView extends JetView {
 							label: "Номер паспорта",
 							name: formNames.passportNumber,
 							labelWidth,
-							pattern: {mask:"##-#######", allow:/[0-9]/g},
-							required: true
+							pattern: {mask:"##-#######"},
+							required: true,
+							invalidMessage: "Two capital letters + 7 digits",
+							validate: (value: string) => {
+								const regExp = /^[A-Z]{2}\d{7}/g;
+								return regExp.test(value);
+							}
 						},
 						{
 							view: "datepicker",
@@ -92,23 +105,23 @@ export default class RegisterWindowView extends JetView {
 							attributes: {maxlength: 120}
 						},
 						generatePhonenumberTextInputConfig("Телефон-1", formNames.phone1, labelWidth, {on: {
-							onChange: (newValue, oldValue) => {
-								if (newValue.length === 12) {
-									this.$$form.queryView({name: formNames.phone2}).show();
+							onTimedKeyPress() {
+								if (this.getValue().length === phoneNumberLength) {
+									root.$$form.queryView({name: formNames.phone2}).show();
 								}
 							}
 						}}),
 						generatePhonenumberTextInputConfig("Телефон-2", formNames.phone2, labelWidth, {hidden: true, on: {
-							onChange: (newValue, oldValue) => {
-								if (newValue.length === 12) {
-									this.$$form.queryView({name: formNames.phone3}).show();
+							onTimedKeyPress() {
+								if (this.getValue().length === phoneNumberLength) {
+									root.$$form.queryView({name: formNames.phone3}).show();
 								}
 							}
 						}}),
 						generatePhonenumberTextInputConfig("Телефон-3", formNames.phone3, labelWidth, {hidden: true, on: {
-							onChange: (newValue, oldValue) => {
-								if (newValue.length === 12) {
-									this.$$form.queryView({name: formNames.phone4}).show();
+							onTimedKeyPress() {
+								if (this.getValue().length === phoneNumberLength) {
+									root.$$form.queryView({name: formNames.phone4}).show();
 								}
 							}
 						}}),
@@ -133,7 +146,6 @@ export default class RegisterWindowView extends JetView {
 							label: "Password",
 							type: "password",
 							name: formNames.password,
-							invalidMessage: "Ent. year between 1970 and cur.",
 							labelWidth,
 							required: true
 						}
@@ -142,7 +154,25 @@ export default class RegisterWindowView extends JetView {
 			],
 			rules: {
 				[formNames.firstName]: webix.rules.isNotEmpty,
-				[formNames.secondName]: webix.rules.isNotEmpty
+				[formNames.secondName]: webix.rules.isNotEmpty,
+				[formNames.login]: webix.rules.isNotEmpty,
+				[formNames.password]: webix.rules.isNotEmpty,
+				[formNames.phone1]: (value) => {
+					const form = this.$$form;
+
+					if (value.length === phoneNumberLength
+						|| form.queryView({name: formNames.phone2}).getValue().length === phoneNumberLength
+						|| form.queryView({name: formNames.phone3}).getValue().length === phoneNumberLength
+						|| form.queryView({name: formNames.phone4}).getValue().length === phoneNumberLength
+					) {
+						return true;
+					}
+					else {
+						form.markInvalid(formNames.phone1, "Type minimum one phone number");
+						// form.queryView({name: formNames.phone1}).markInvalid()
+						return false;
+					}
+				},
 			}
 		} as webix.ui.formConfig;
 
@@ -189,44 +219,88 @@ export default class RegisterWindowView extends JetView {
 		return ui;
 	}
 
+	init(view) {
+		this.progressBar = new ProgressBar(view);
+	}
+
 	get $$form(): webix.ui.form {
-		return this.$$(constants.AUTHORIZATION_VIEW.REGISTER.FORM_ID) as unknown as webix.ui.form;
+		if (!this.formView) {
+			this.formView = this.$$(constants.AUTHORIZATION_VIEW.REGISTER.FORM_ID) as unknown as webix.ui.form;
+		}
+		return this.formView;
 	}
 
 	// eslint-disable-next-line consistent-return
 	async registerNewUser() {
+		this.progressBar.showProgress();
 		// eslint-disable-next-line no-console
 		console.log("register new user");
 
 		const authModel = AuthModel.getInstance();
 
-		// const form = this.$$form;
-		// const values = form.getValues();
-		const mockValues = {
-			first_name: 'Alex',
-			last_name: 'Malex',
-			passport_number: 'BM11111111',
-			// birthday: '2000-01-01',
-			birthday: 1231231,
-			// phone_1: '375331112233',
-			// phone_2: '375331112233',
-			phoneNumbers: ['375331112233', '375331112233'],
-			login: 'librarian',
-			password: 'librarian'
+		const form = this.$$form;
+
+		if (form.isDirty() && form.validate()) {
+			const values = form.getValues();
+			const copyValues = webix.copy(values);
+
+			for (let key in copyValues) {
+				if (!copyValues[key]) {
+					delete copyValues[key];
+				}
+				else if (key.indexOf('phone') !== -1) {
+					delete copyValues[key];
+				}
+			}
+
+			if (copyValues.birthday) {
+				debugger;
+				copyValues.birthday = getDate(copyValues.birthday);
+			}
+
+			const phones = [];
+			for(let i = 1; i <= 4; i++) {
+				const phoneValue = values[`phone_${i}`];
+				if (phoneValue) {
+					phones.push(phoneValue);
+				}
+			}
+			const uniquePhones = new Set(phones);
+
+			copyValues.phoneNumbers = Array.from(uniquePhones);
+
+			// const mockValues = {
+			// 	first_name: 'Alex',
+			// 	last_name: 'Malex',
+			// 	passport_number: 'BM11111111',
+			// 	// birthday: '2000-01-01',
+			// 	birthday: 1231231,
+			// 	// phone_1: '375331112233',
+			// 	// phone_2: '375331112233',
+			// 	phoneNumbers: ['375331112233', '375331112233'],
+			// 	login: 'librarian',
+			// 	password: 'librarian'
+			// }
+
+			const res = await authModel.registrationNewUser(copyValues);
+
+			if (res.success) {
+				this.hideWindow();
+				const user = this.app.getService("user");
+
+				user.cookieLogin().catch((e) => {
+					// eslint-disable-next-line no-console
+					console.log(e);
+				});
+			}
+			else if (res.errorFields) {
+				form.markInvalid(res.errorFields[0], res.data.message);
+			}
 		}
 
-		const res = await authModel.registrationNewUser(mockValues);
+		this.progressBar.hideProgress();
 
-		if (res.success) {
-			const user = this.app.getService("user");
-
-			user.cookieLogin().catch((e) => {
-				// eslint-disable-next-line no-console
-				console.log(e);
-			});
-		}
-
-		this.hideWindow();
+		
 	}
 
 	hideWindow() {
@@ -251,14 +325,15 @@ export default class RegisterWindowView extends JetView {
 		this.getRoot().show();
 	}
 
-	private generateNameTextInputConfig(label: string, name: string, isRequired: boolean, labelWidth: number) {
+	private generateNameTextInputConfig(label: string, name: string, isRequired: boolean, labelWidth: number, additioanalConfig?: webix.ui.textConfig) {
 		return {
 			view: "text",
 			label,
 			name,
 			labelWidth,
 			required: isRequired,
-			attributes: {maxlength: 30}
+			attributes: {maxlength: 30},
+			...additioanalConfig
 		} as webix.ui.textConfig
 	}
 }
