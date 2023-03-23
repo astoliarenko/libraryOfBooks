@@ -2,7 +2,7 @@ import {JetView} from "webix-jet";
 
 import constants from "../../constants";
 import { wrapInScrollView } from "../../helpers/usefulFunctions";
-import generatePhonenumberTextInputConfig from "../..//helpers/inputs";
+import generatePhonenumberTextInputConfig from "../../helpers/inputs";
 import AuthModel from "../../models/authModel";
 
 const formNames = {
