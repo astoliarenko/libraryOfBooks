@@ -205,10 +205,12 @@ export default class RegisterWindowView extends JetView {
 		const mockValues = {
 			first_name: 'Alex',
 			last_name: 'Malex',
-			passport_number: '1111111111',
-			birthday: '2000-01-01',
-			phone_1: '375331112233',
-			phone_2: '375331112233',
+			passport_number: 'BM11111111',
+			// birthday: '2000-01-01',
+			birthday: 1231231,
+			// phone_1: '375331112233',
+			// phone_2: '375331112233',
+			phoneNumbers: ['375331112233', '375331112233'],
 			login: 'librarian',
 			password: 'librarian'
 		}
@@ -216,7 +218,12 @@ export default class RegisterWindowView extends JetView {
 		const res = await authModel.registrationNewUser(mockValues);
 
 		if (res.success) {
-			const {login, password} = res.data;
+			const user = this.app.getService("user");
+
+			user.cookieLogin().catch((e) => {
+				// eslint-disable-next-line no-console
+				console.log(e);
+			});
 		}
 
 		this.hideWindow();
