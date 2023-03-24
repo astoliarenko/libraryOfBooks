@@ -43,7 +43,7 @@ class authService {
 				return {
 					message: "User with the same passport already registered",
 					status: 400,
-					field: 'passport',
+					field: 'passport_number',
 					success: false
 				};
 			}
@@ -58,20 +58,21 @@ class authService {
 			phones[`phone_${index + 1}`] = number;
 		});
 
-		const newUser = await authRepository.addNewUser({
+		const newUserId = await authRepository.addNewUser({
 			...userDataCopy,
 			password: hashPassword,
 			id_role: defRole,
 			...phones
 		});
 
-		if (newUser) {
+		if (newUserId !== null) {
 			return {
 				message: "User is registered successfully",
 				status: 201,
 				success: true,
+				userId: newUserId,
 				userInfo: {
-					userName: `${newUser[0][0].first_name} ${newUser[0][0].last_name}`,
+					userName: `${userDataCopy.first_name} ${userDataCopy.last_name}`,
 					roleId: defRole,
 				}
 			};

@@ -19,20 +19,38 @@ class authController {
 			const newUserData = await authService.registerUser(req.body);
 
 			if (newUserData.success) {
+				const token = generateAccessToken(
+					newUserData.userId,
+					newUserData.userInfo.roleId
+				);
+
+				res.cookie(
+					constants.TOKEN_NAMES.ACCESS_TOKEN,
+					token
+				);
+
 				res.status(newUserData.status).json({
 					message: newUserData.message,
+					userInfo: newUserData.userInfo
 				});
 			}
 			else {
 				res.status(newUserData.status).json({
 					message: newUserData.message,
+					field: newUserData.field
 				});
 			}
 		} catch (e) {
 			console.log(e); /* TODO: delete */
+			let message = "Registration error";
+			let status = 500;
+			if (e?.sqlMessage) {
+				message = e.sqlMessage;
+				status = 422;
+			}
 
-			res.status(400).json({
-				message: "Registration error",
+			res.status(status).json({
+				message
 			});
 		}
 	}

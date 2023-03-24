@@ -122,6 +122,14 @@ export default class AuthModel extends BaseModel {
             400: (response, result: IQueryResult) => {
                 result.success = false;
                 result.data = response.data;
+                result.errorFields = [response.data.field];
+
+                return result;
+            },
+            422: (response, result: IQueryResult) => {
+                result.success = false;
+                result.data = response.data;
+                result.errorFields = [response.data.field];
 
                 return result;
             }

@@ -2,7 +2,7 @@ import {JetView} from "webix-jet";
 
 import constants from "../constants";
 import rolesData from "../data/rolesData";
-import RegisterWindowView from "./authorization/registerWindow";
+import RegisterWindowView from "../popups/authorization/registerWindow";
 import { getCookieItem } from "../helpers/storages/localAndSessionStorage";
 import AuthModel from "../models/authModel";
 

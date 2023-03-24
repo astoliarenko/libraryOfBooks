@@ -20,4 +20,10 @@ function wrapInScrollView(
 	};
 }
 
-export {getCookie, wrapInScrollView};
+function getDate(date: Date) {
+	const month = date.getMonth();
+	const day = date.getDay();
+	return `${date.getFullYear()}-${month < 10 ? `0${month}` : month}-${day < 10 ? `0${day}` : day}`;
+}
+
+export {getCookie, wrapInScrollView, getDate};

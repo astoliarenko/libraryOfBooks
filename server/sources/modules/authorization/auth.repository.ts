@@ -70,27 +70,42 @@ class AuthorizationRepository {
 		`);
 	}
 
-	async addNewUser(userData: newUserInfo): Promise<[userInfo[] | [], any[]] | null> {
+	async addNewUser(userData: newUserInfo): Promise<number | null> {
 		const {login, password, id_role, ...restUserInfo} = userData;
 		const newUser = await promisePool.query(`
 			INSERT INTO ${DB.USERS.NAME}
 			(${DB.USERS.COLUMNS.LOGIN}, ${DB.USERS.COLUMNS.PASSWORD}, ${DB.USERS.COLUMNS.ROLE_ID})
 			VALUES('${login}', '${password}', '${id_role}')
-		`);
+		`) as [{fieldCount: number, affectedRows: 1, insertId: number, info: string, serverStatus: number, warningStatus: number}, any];
 
-		if (newUser[0][0].length) {
-			const userInfo = {...restUserInfo, id_user: newUser.id_user};
+		const newUserId = newUser ? newUser[0]?.insertId : null;
+
+		if (newUserId) {
+			const userInfo = {...restUserInfo, id_user: newUserId};
 			const keys = Object.keys(userInfo);
 			const values = Object.values(userInfo);
 
 			const colNamesStr = `${keys.join(', ')}`;
 			const valuesStr = `'${values.join("', '")}'`;
 
-			return promisePool.query(`
-				INSERT INTO ${DB.USERS_INFO.NAME}
-				(${colNamesStr})
-				VALUES(${valuesStr})
-			`);
+			try {
+				const userInfoRes = await promisePool.query(`
+					INSERT INTO ${DB.USERS_INFO.NAME}
+					(${colNamesStr})
+					VALUES(${valuesStr})
+				`);
+
+				if (userInfoRes && Number.isInteger(userInfoRes[0]?.insertId)) {
+					return newUserId;
+				}
+			}
+			catch(e) {
+				promisePool.query(`
+					DELETE FROM ${DB.USERS.NAME}
+					WHERE ${DB.USERS.NAME}.${DB.USERS.COLUMNS.USER_ID} = ${newUserId}
+				`);
+				throw(e);
+			}	
 		}
 
 		return null;
