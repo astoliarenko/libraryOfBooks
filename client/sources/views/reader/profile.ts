@@ -1,12 +1,21 @@
 import {JetView} from "webix-jet";
 
 import constants from "../../constants";
-import userInfoColumns from "../../data/userInfoColumns";
+import { wrapInScrollView } from "../../helpers/usefulFunctions";
+import { formInputNames } from "../../helpers/constants/commonConst";
+import ProgressBar from "../../helpers/progressBar";
+
+const formNames = formInputNames.userInfo;
+const formLayoutId = 'formLayout';
 
 export default class ProfileView extends JetView {
+	private progressBar: ProgressBar;
+
+	private formView: webix.ui.form;
+
 	config() {
 		const labelWidth = 120;
-		const formWidth = 800;
+		const formWidth = 400;
 
 		const applyChangesBtn = {
 			view: "button",
@@ -16,7 +25,6 @@ export default class ProfileView extends JetView {
 			height: 50,
 			width: 100,
 			click: () => {
-				debugger;
 				webix.confirm("Apply changes?")
 					.then(() => {
 						this.applyChanges();
@@ -60,103 +68,88 @@ export default class ProfileView extends JetView {
 				{
 					rows: [
 						{
-							cols: [
-								{
-									gravity: 1,
-									rows: [
-										{
-											view: "text",
-											label: "Имя",
-											name: userInfoColumns.firstName,
-											labelWidth
-										},
-										{
-											view: "text",
-											label: "Фамилия",
-											name: "secondName",
-											labelWidth
-										},
-										{
-											view: "text",
-											label: "Отчество",
-											name: "thirdName",
-											labelWidth
-										},
-										{
-											view: "text",
-											label: "Номер паспорта",
-											name: userInfoColumns.passportNumber,
-											labelWidth
-										},
-										{
-											view: "datepicker",
-											value: "",
-											name: userInfoColumns.birthDate,
-											label: "Дата рождения",
-											timepicker: false,
-											format: webix.Date.dateToStr(constants.DATE_FORMAT, false),
-											labelWidth
-										},
-										{
-											view: "textarea",
-											label: "Адрес",
-											name: userInfoColumns.address,
-											labelWidth
-										}
-									]
-								},
-								{
-									gravity: 1,
-									rows: [
-										{
-											view: "text",
-											label: "Телефон-1",
-											name: userInfoColumns.phoneNumber1,
-											labelWidth
-										},
-										{
-											view: "text",
-											label: "Телефон-2",
-											name: userInfoColumns.phoneNumber2,
-											labelWidth
-										},
-										{
-											view: "text",
-											label: "Телефон-3",
-											name: userInfoColumns.phoneNumber3,
-											labelWidth
-										},
-										{
-											view: "text",
-											label: "Телефон-4",
-											name: userInfoColumns.phoneNumber4,
-											labelWidth
-										}
-									// {
-									// 	view: "text",
-									// 	label: "Логин",
-									// 	name: "login",
-									// 	labelWidth
-									// },
-									// {
-									// 	view: "text",
-									// 	label: "Password",
-									// 	type: "password",
-									// 	name: "password",
-									// 	invalidMessage: "Ent. year between 1970 and cur.",
-									// 	labelWidth
-									// }
-									]
-								}
-							]
+							view: "text",
+							label: "Номер карточки",
+							name: formNames.cardId,
+							labelWidth
 						},
 						{
-							cols: [
-								applyChangesBtn,
-								{},
-								cancelChangesBtn
-							]
+							view: "text",
+							label: "Имя",
+							name: formNames.firstName,
+							labelWidth
+						},
+						{
+							view: "text",
+							label: "Фамилия",
+							name: formNames.secondName,
+							labelWidth
+						},
+						{
+							view: "text",
+							label: "Отчество",
+							name: formNames.thirdName,
+							labelWidth
+						},
+						{
+							view: "text",
+							label: "Номер паспорта",
+							name: formNames.passportNumber,
+							labelWidth
+						},
+						{
+							view: "datepicker",
+							value: "",
+							name: formNames.birthDate,
+							label: "Дата рождения",
+							timepicker: false,
+							format: webix.Date.dateToStr(constants.DATE_FORMAT, false),
+							labelWidth
+						},
+						{
+							view: "textarea",
+							label: "Адрес",
+							name: formNames.address,
+							labelWidth
+						},
+						{
+							view: "text",
+							label: "Телефон-1",
+							name: formNames.phone1,
+							labelWidth
+						},
+						{
+							view: "text",
+							label: "Телефон-2",
+							name: formNames.phone2,
+							labelWidth
+						},
+						{
+							view: "text",
+							label: "Телефон-3",
+							name: formNames.phone3,
+							labelWidth
+						},
+						{
+							view: "text",
+							label: "Телефон-4",
+							name: formNames.phone4,
+							labelWidth
 						}
+					// {
+					// 	view: "text",
+					// 	label: "Логин",
+					//  name: formNames.login,
+					// 	labelWidth
+					// },
+					// {
+					// 	view: "text",
+					// 	label: "Password",
+					// 	type: "password",
+					// 	name: formNames.password,
+					// 	invalidMessage: "Ent. year between 1970 and cur.",
+					// 	labelWidth
+					// }
 					]
 				}
 			],
@@ -167,26 +160,49 @@ export default class ProfileView extends JetView {
 
 		const ui = {
 			type: "clean",
-			cols: [
-				form, {}
+			rows: [
+				wrapInScrollView('xy', {
+					rows: [
+						{
+							localId: formLayoutId,
+							cols: [
+								form, {}
+							]
+						},
+						{}
+					]
+				}),
+				{
+					padding: 20,
+					cols: [
+						applyChangesBtn,
+						{},
+						cancelChangesBtn
+					]
+				}
 			]
 		};
 
 		return ui;
 	}
 
-	$$form() {
-		return this.$$(constants.IDs.USER_INFO_FORM);
+	get $$form() {
+		if (!this.formView) {
+			this.formView = this.$$(constants.IDs.USER_INFO_FORM) as unknown as webix.ui.form;
+		}
+		return this.formView;
+	}
+
+	get $$formLayout() {
+		return this.$$(formLayoutId) as unknown as webix.ui.layout;
+	}
+
+	init() {
+		this.progressBar = new ProgressBar(this.$$formLayout);
 	}
 
 	ready() {
-		// booksCollection.waitData.then(() => {
-		// 	const id = booksCollection.getFirstId();
-
-		// 	if (id) {
-		// 		this.dt.$$datatable.select(id);
-		// 	}
-		// });
+		this.progressBar.showProgress();
 	}
 
 	applyChanges() {

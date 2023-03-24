@@ -3,6 +3,7 @@ import {JetApp, EmptyRouter, HashRouter} from "webix-jet";
 import User from "./customPlugins/User";
 import "./styles/app.css";
 import "./styles/datatable.scss";
+import "./styles/common.scss";
 import fetchApiService from "models/fetchApiService";
 import { events } from "./helpers/constants/commonConst";
 import AuthModel from "models/authModel";
