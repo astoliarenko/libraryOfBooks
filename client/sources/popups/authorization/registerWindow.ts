@@ -1,26 +1,13 @@
 import {JetView} from "webix-jet";
 
 import constants from "../../constants";
-import { formInputs } from "../../helpers/constants/commonConst";
+import { formInputs, formInputNames } from "../../helpers/constants/commonConst";
 import { wrapInScrollView, getDate } from "../../helpers/usefulFunctions";
 import generatePhonenumberTextInputConfig from "../../helpers/inputs";
 import AuthModel from "../../models/authModel";
 import ProgressBar from "../../helpers/progressBar";
 
-const formNames = {
-	firstName: 'first_name',
-	secondName: 'last_name',
-	thirdName: 'third_name',
-	passportNumber: 'passport_number',
-	birthDate: 'birthday',
-	address: 'address',
-	login: 'login',
-	password: 'password',
-	phone1: 'phone_1',
-	phone2: 'phone_2',
-	phone3: 'phone_3',
-	phone4: 'phone_4'
-};
+const formNames = formInputNames.userInfo;
 const phoneNumberLength = formInputs.phoneNumberLength;
 
 export default class RegisterWindowView extends JetView {
