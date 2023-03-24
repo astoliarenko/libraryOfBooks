@@ -43,7 +43,7 @@ class authService {
 				return {
 					message: "User with the same passport already registered",
 					status: 400,
-					field: 'passport',
+					field: 'passport_number',
 					success: false
 				};
 			}

@@ -254,7 +254,6 @@ export default class RegisterWindowView extends JetView {
 			}
 
 			if (copyValues.birthday) {
-				debugger;
 				copyValues.birthday = getDate(copyValues.birthday);
 			}
 
