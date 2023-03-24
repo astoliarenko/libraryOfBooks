@@ -110,7 +110,7 @@ export default class RegisterWindowView extends JetView {
 									root.$$form.queryView({name: formNames.phone2}).show();
 								}
 							}
-						}}),
+						}, required: true}),
 						generatePhonenumberTextInputConfig("Телефон-2", formNames.phone2, labelWidth, {hidden: true, on: {
 							onTimedKeyPress() {
 								if (this.getValue().length === phoneNumberLength) {
