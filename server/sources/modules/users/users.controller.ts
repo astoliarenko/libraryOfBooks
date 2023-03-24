@@ -9,7 +9,7 @@ class UsersController {
 			const reqCookies = req.headers.cookie;
 
 			if (!reqCookies) {
-				res.status(400).json({success: false});
+				res.status(400);
 			}
 			else {
 				const token = getCookie(reqCookies, constants.TOKEN_NAMES.ACCESS_TOKEN);
@@ -20,10 +20,10 @@ class UsersController {
 					const [rows, fields] = await usersRepository.getUserInfoById(tokenInfo.id);
 					
 					if (rows.length) {
-						res.status(200).json({data: rows[0]});
+						res.status(200).json(rows[0]);
 					}
 				}
-				else res.status(400).json({success: false});
+				else res.status(400);
 			}
 		}
 		catch(e) {

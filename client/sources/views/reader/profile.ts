@@ -72,8 +72,9 @@ export default class ProfileView extends JetView {
 							view: "text",
 							label: "Номер карточки",
 							name: formNames.cardId,
-							labelWidth
-						},
+							labelWidth,
+							disabled: true
+						} as webix.ui.textConfig,
 						{
 							view: "text",
 							label: "Имя",
@@ -96,7 +97,8 @@ export default class ProfileView extends JetView {
 							view: "text",
 							label: "Номер паспорта",
 							name: formNames.passportNumber,
-							labelWidth
+							labelWidth,
+							disabled: true
 						},
 						{
 							view: "datepicker",
@@ -206,15 +208,17 @@ export default class ProfileView extends JetView {
 		this.progressBar.showProgress();
 
 		const model = UsersModel.getInstance();
-		debugger;
-
 		const res = await model.getUserinfo();
 
-		if (res.success) {
-			debugger;
-			// TODO:
-			console.log('res', res.data);
+		if (res.success && res.data) {
+			const dataCopy = webix.copy(res.data);
+			if (dataCopy.birthday) {
+				dataCopy.birthday = new Date(dataCopy.birthday);
+			}
+
+			this.$$form.setValues(dataCopy);
 		}
+		this.progressBar.hideProgress();
 	}
 
 	applyChanges() {
