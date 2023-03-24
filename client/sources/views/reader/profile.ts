@@ -4,6 +4,7 @@ import constants from "../../constants";
 import { wrapInScrollView } from "../../helpers/usefulFunctions";
 import { formInputNames } from "../../helpers/constants/commonConst";
 import ProgressBar from "../../helpers/progressBar";
+import UsersModel from "../../models/users";
 
 const formNames = formInputNames.userInfo;
 const formLayoutId = 'formLayout';
@@ -201,8 +202,19 @@ export default class ProfileView extends JetView {
 		this.progressBar = new ProgressBar(this.$$formLayout);
 	}
 
-	ready() {
+	async ready() {
 		this.progressBar.showProgress();
+
+		const model = UsersModel.getInstance();
+		debugger;
+
+		const res = await model.getUserinfo();
+
+		if (res.success) {
+			debugger;
+			// TODO:
+			console.log('res', res.data);
+		}
 	}
 
 	applyChanges() {

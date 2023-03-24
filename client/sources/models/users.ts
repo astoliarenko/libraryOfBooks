@@ -1,0 +1,42 @@
+import BaseModel from "./baseModel";
+import { getRequestOptions } from "./fetchApiService";
+import IQueryResult from "../interfaces/IQueryResult";
+
+export default class UsersModel extends BaseModel {
+	protected static instance: UsersModel;
+
+    private constructor() {
+        super();
+        this.entityName = 'books or genres';
+    }
+
+    public static getInstance(): UsersModel {
+        if (!UsersModel.instance) {
+            UsersModel.instance = new UsersModel();
+        }
+
+        return UsersModel.instance;
+    }
+
+	public async getUserinfo() {
+		return this.handleRequestResponse(
+            getRequestOptions({path: '/users'}),
+            {},
+            {200: (response, result: IQueryResult) => {
+                result.success = true;
+                result.data = response.data;
+
+                return result;
+            },
+            400: (response, result: IQueryResult) => {
+                result.success = false;
+                result.data = response.data;
+                result.errorFields = [response.data.field];
+
+                return result;
+            }
+        },
+            'registration new user'
+        );
+	}
+}
