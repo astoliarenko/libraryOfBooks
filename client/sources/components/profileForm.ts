@@ -93,12 +93,13 @@ export default class ProfileForm extends JetView {
 										root.$$form.queryView({name: formNames.phone2}).show();
 									}
 								}
-							}
+							},
+							required: true
 						} : {}
 					),
 					generatePhonenumberTextInputConfig(
 						"Телефон-2",
-						formNames.phone1,
+						formNames.phone2,
 						this.type === "registration" ? {
 							on: {
 								onTimedKeyPress() {
@@ -112,7 +113,7 @@ export default class ProfileForm extends JetView {
 					),
 					generatePhonenumberTextInputConfig(
 						"Телефон-3",
-						formNames.phone1,
+						formNames.phone3,
 						this.type === "registration" ? {
 							on: {
 								onTimedKeyPress() {
