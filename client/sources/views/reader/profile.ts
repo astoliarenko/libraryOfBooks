@@ -5,6 +5,7 @@ import { wrapInScrollView } from "../../helpers/usefulFunctions";
 import { formInputNames } from "../../helpers/constants/commonConst";
 import ProgressBar from "../../helpers/progressBar";
 import UsersModel from "../../models/users";
+import ProfileForm from "../../components/profileForm";
 
 const formNames = formInputNames.userInfo;
 const formLayoutId = 'formLayout';
@@ -12,7 +13,11 @@ const formLayoutId = 'formLayout';
 export default class ProfileView extends JetView {
 	private progressBar: ProgressBar;
 
+	private phoneNumbers: string[];
+
 	private formView: webix.ui.form;
+
+	private form: ProfileForm;
 
 	config() {
 		const labelWidth = 120;
@@ -22,6 +27,7 @@ export default class ProfileView extends JetView {
 			view: "button",
 			label: "Apply",
 			type: "icon",
+			css: "webix_primary",
 			icon: "wxi-check",
 			height: 50,
 			width: 100,
@@ -29,12 +35,9 @@ export default class ProfileView extends JetView {
 				webix.confirm("Apply changes?")
 					.then(() => {
 						this.applyChanges();
-						webix.message("Apply", "info");
 					})
 					// @ts-ignore
-					.fail(() => {
-						webix.message("Cancel", "error");
-					});
+					.fail(() => {});
 			}
 		};
 
@@ -48,118 +51,24 @@ export default class ProfileView extends JetView {
 			click: () => {
 				webix.confirm("Cancel changes?")
 					.then(() => {
-						webix.message("Cancel", "info");
+						this.$$form.clearValidation();
+						// TODO: return prev values
+						// this.$$form.clear();
 					})
 					// @ts-ignore
 					.fail(() => {
-						webix.message("Cancel", "error");
 					});
 			}
 		};
 
-		const form = {
-			view: "form",
-			borderless: true,
-			localId: constants.IDs.USER_INFO_FORM,
-			width: formWidth,
-			elementsConfig: {
-				margin: 10
-			},
-			elements: [
-				{
-					rows: [
-						{
-							view: "text",
-							label: "Номер карточки",
-							name: formNames.cardId,
-							labelWidth,
-							disabled: true
-						} as webix.ui.textConfig,
-						{
-							view: "text",
-							label: "Имя",
-							name: formNames.firstName,
-							labelWidth
-						},
-						{
-							view: "text",
-							label: "Фамилия",
-							name: formNames.secondName,
-							labelWidth
-						},
-						{
-							view: "text",
-							label: "Отчество",
-							name: formNames.thirdName,
-							labelWidth
-						},
-						{
-							view: "text",
-							label: "Номер паспорта",
-							name: formNames.passportNumber,
-							labelWidth,
-							disabled: true
-						},
-						{
-							view: "datepicker",
-							value: "",
-							name: formNames.birthDate,
-							label: "Дата рождения",
-							timepicker: false,
-							format: webix.Date.dateToStr(constants.DATE_FORMAT, false),
-							labelWidth
-						},
-						{
-							view: "textarea",
-							label: "Адрес",
-							name: formNames.address,
-							labelWidth
-						},
-						{
-							view: "text",
-							label: "Телефон-1",
-							name: formNames.phone1,
-							labelWidth
-						},
-						{
-							view: "text",
-							label: "Телефон-2",
-							name: formNames.phone2,
-							labelWidth
-						},
-						{
-							view: "text",
-							label: "Телефон-3",
-							name: formNames.phone3,
-							labelWidth
-						},
-						{
-							view: "text",
-							label: "Телефон-4",
-							name: formNames.phone4,
-							labelWidth
-						}
-					// {
-					// 	view: "text",
-					// 	label: "Логин",
-					//  name: formNames.login,
-					// 	labelWidth
-					// },
-					// {
-					// 	view: "text",
-					// 	label: "Password",
-					// 	type: "password",
-					// 	name: formNames.password,
-					// 	invalidMessage: "Ent. year between 1970 and cur.",
-					// 	labelWidth
-					// }
-					]
-				}
-			],
-			rules: {
-				firstName: webix.rules.isNotEmpty
-			}
-		};
+		this.form = new ProfileForm(
+			this.app,
+			{},
+			"update",
+			{},
+			{labelWidth},
+			{}
+		);
 
 		const ui = {
 			type: "clean",
@@ -169,7 +78,7 @@ export default class ProfileView extends JetView {
 						{
 							localId: formLayoutId,
 							cols: [
-								form, {}
+								this.form, {}
 							]
 						},
 						{}
@@ -189,11 +98,8 @@ export default class ProfileView extends JetView {
 		return ui;
 	}
 
-	get $$form() {
-		if (!this.formView) {
-			this.formView = this.$$(constants.IDs.USER_INFO_FORM) as unknown as webix.ui.form;
-		}
-		return this.formView;
+	get $$form(): webix.ui.form {
+		return this.form.$$form;
 	}
 
 	get $$formLayout() {
@@ -216,12 +122,33 @@ export default class ProfileView extends JetView {
 				dataCopy.birthday = new Date(dataCopy.birthday);
 			}
 
+			this.phoneNumbers = this.getPhooneNumbersArray(dataCopy);
+
 			this.$$form.setValues(dataCopy);
 		}
 		this.progressBar.hideProgress();
 	}
 
+	private getPhooneNumbersArray(data: {[key: string]: any}): string[] {
+		const keys = Object.keys(data);
+		const phonesArr = [];
+
+		keys.forEach(key => {
+			if (key.indexOf('phone') !== -1 && data[key]) {
+				phonesArr.push(data[key]);
+			}
+		});
+
+		return phonesArr;
+	}
+
 	applyChanges() {
-		// const form = this.$$form();
+		const form = this.$$form;
+
+		const isDirty = form.isDirty();
+
+		// TODO: validate phone numbers for uniqueness
+
+		console.log('is dirty', isDirty);
 	}
 }

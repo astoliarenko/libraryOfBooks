@@ -160,6 +160,7 @@ export default class ProfileForm extends JetView {
 
 		const form = {
 			view: "form",
+			borderless: true,
 			padding: {top: 18, left: 17, right: 18, bottom: 7},
 			elementsConfig: {
 				labelWidth: this.elementsConfig.labelWidth

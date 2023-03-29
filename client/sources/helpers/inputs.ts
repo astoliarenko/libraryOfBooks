@@ -1,22 +1,21 @@
 import { formInputs } from "./constants/commonConst";
 
-const generatePhonenumberTextInputConfig = (label: string, name: string, labelWidth: number, additional?: webix.ui.textConfig) => {
+const generatePhonenumberTextInputConfig = (label: string, name: string, additionalConfig?: webix.ui.textConfig) => {
 	let config = {
 		view: "text",
 		label,
 		name,
-		labelWidth: labelWidth,
 		pattern: {mask:"+### (##) ###-##-##", allow:/[0-9]/g},
 		validate: (value) => {
 			return value.length === formInputs.phoneNumberLength || value.length === 0;
 		},
-		...additional
+		...additionalConfig
 	} as webix.ui.textConfig;
 
-	if (additional) {
+	if (additionalConfig) {
 		config = {
 			...config,
-			...additional
+			...additionalConfig
 		}
 	}
 
