@@ -13,7 +13,6 @@ export default class TokenService {
 			role, /* 1 role */
 		};
 		return jwt.sign(payload, config.SECRET, { expiresIn: "24h" });
-		// {expiresIn: "24h"} - столько будет "жить" токен
 	}
 
 	static getInfoFromToken(token: string) {
