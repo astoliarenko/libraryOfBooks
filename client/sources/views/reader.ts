@@ -9,7 +9,7 @@ import BooksModel from "models/books";
 // cancel order,
 // see availible book copies,
 // edit profile data
-export default class ReaderView extends MainPage {
+export default class Reader extends MainPage {
 	constructor(app) {
 		super(
 			app,

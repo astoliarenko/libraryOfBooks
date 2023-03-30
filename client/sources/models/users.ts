@@ -56,4 +56,24 @@ export default class UsersModel extends BaseModel {
             'user info was updated'
         );
 	}
+
+    public async getAllUsers(userInfo) {
+		return this.handleRequestResponse(
+            getRequestOptions({path: '/users'}),
+            {},
+            {200: (response, result: IQueryResult) => {
+                result.success = true;
+                result.data = response.data;
+
+                return result;
+            },
+            400: (response, result: IQueryResult) => {
+                result.success = false;
+
+                return result;
+            }
+        },
+            'get user info'
+        );
+	}
 }
