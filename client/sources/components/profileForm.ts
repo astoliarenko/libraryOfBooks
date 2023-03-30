@@ -169,6 +169,21 @@ export default class ProfileForm extends JetView {
 			rules: {
 				[formNames.firstName]: webix.rules.isNotEmpty,
 				[formNames.secondName]: webix.rules.isNotEmpty,
+				[formNames.phone1]: (value: string) => {
+					const form = this.$$form;
+
+					if (value.length === phoneNumberLength
+						|| form.getValues()[formNames.phone2].length === phoneNumberLength
+						|| form.getValues()[formNames.phone3].length === phoneNumberLength
+						|| form.getValues()[formNames.phone4].length === phoneNumberLength
+					) {
+						return true;
+					}
+					else {
+						form.markInvalid(formNames.phone1, "Type minimum one phone number");
+						return false;
+					}
+				},
 				...this.rules
 			},
 			...this.additioanalConfig
