@@ -18,6 +18,8 @@ export default class ProfileView extends JetView {
 
 	private form: ProfileForm;
 
+	private unmodifiedFormValues: webix.obj;
+
 	config() {
 		const labelWidth = 120;
 		const formWidth = 400;
@@ -95,11 +97,11 @@ export default class ProfileView extends JetView {
 		return ui;
 	}
 
-	get $$form(): webix.ui.form {
+	private get $$form(): webix.ui.form {
 		return this.form.$$form;
 	}
 
-	get $$formLayout() {
+	private get $$formLayout() {
 		return this.$$(formLayoutId) as unknown as webix.ui.layout;
 	}
 
@@ -121,6 +123,8 @@ export default class ProfileView extends JetView {
 
 			this.phoneNumbers = this.getPhooneNumbersArray(dataCopy);
 
+			this.unmodifiedFormValues = dataCopy;
+
 			this.$$form.setValues(dataCopy);
 		}
 		this.progressBar.hideProgress();
@@ -139,7 +143,7 @@ export default class ProfileView extends JetView {
 		return phonesArr;
 	}
 
-	async applyChanges() {
+	private async applyChanges() {
 		this.progressBar.showProgress();
 
 		const form = this.$$form;
@@ -155,14 +159,17 @@ export default class ProfileView extends JetView {
 
 			if (res.success) {
 				form.setDirty(false);
+				this.unmodifiedFormValues = form.getValues();
 			}
 		}
 
 		this.progressBar.hideProgress();
 	}
 
-	cancelChanges() {
-		// const form = this.$$form;
-		// form.clearValidation();
+	private cancelChanges() {
+		const form = this.$$form;
+		form.clearValidation();
+		form.setValues(this.unmodifiedFormValues, true);
+		form.setDirty(false);
 	}
 }
