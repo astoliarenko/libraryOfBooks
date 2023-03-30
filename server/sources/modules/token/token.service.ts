@@ -1,8 +1,7 @@
 import jwt from "jsonwebtoken";
 import config from "../../config";
-import { JwtPayload } from "jsonwebtoken";
 
-interface myJwtPayload extends JwtPayload {
+interface myJwtPayload extends jwt.JwtPayload {
 	id: number,
 	role: number
 }
@@ -22,8 +21,11 @@ export default class TokenService {
 			const tokenInfo = jwt.verify(token, config.SECRET) as myJwtPayload;
 			return tokenInfo;
 		}
-		catch(e) {
-			console.log('tokenError', e);
+		catch(e: any | jwt.VerifyErrors) {
+			if (e.expiredAt | e.inner | e.date) {
+				throw({isTokenError: true, message: e.message});
+			}
+			
 			throw(e);
 		}
 	}

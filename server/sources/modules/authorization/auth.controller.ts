@@ -120,7 +120,13 @@ class authController {
 				else res.status(400).json(false);
 			}
 		} catch (e) {
-			console.log(e);
+			if (e.isTokenError) {
+				console.log(e.message);
+			}
+			else {
+				console.log(e);
+			}
+
 			res.status(400).json(false);
 		}
 	}
