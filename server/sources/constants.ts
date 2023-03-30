@@ -9,8 +9,8 @@ export default {
 				USER_ID: "id_user"
 			},
 			ROLES: {
-				READER: 3,
-				LIBRARIAN: 2,
+				READER: 2,
+				LIBRARIAN: 3,
 				ADMIN: 1,
 			},
 		},

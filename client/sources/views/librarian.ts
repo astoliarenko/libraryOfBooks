@@ -1,39 +1,51 @@
-import {JetView} from "webix-jet";
+import MainPage from "./mainPage";
+import pageViewNames from "../helpers/constants/pageViewNames";
 
-import constants from "../constants";
+import BooksModel from "../models/books";
 
-export default class UsersTableView extends JetView {
-	config() {
-		// авторизуется,
-		// обновляет наличие книг,
-		// смотрит профили читателей,
-		// добавляет взятые книги читателям и снимает возвращенные книги с читателей,
-		// пополняет БД новыми книгами,
-		// удаляет старые книги.
+// авторизуется,
+// обновляет наличие книг,
+// смотрит профили читателей,
+// добавляет взятые книги читателям и снимает возвращенные книги с читателей,
+// пополняет БД новыми книгами,
+// удаляет старые книги.
+export default class Librarian extends MainPage {
+	constructor(app) {
+		super(
+			app,
+			{
+				listMenu: {
+					data: pageViewNames.librarian.views,
+					folderName: "librarian"
+				}
+			},
+			{}
+		)
+	}
 
-		const usersList = {
-			localId: constants,
-			view: "list",
-			// css: "",
-			select: true,
-			on: {
-				onAfterSelect: id => this.show(`user?id=${id}`)
-			}
-		};
+	init() {
+		this.loadUsers();
+	}
 
-		const ui = {
-			cols: [
-				{
-					css: "bg-white",
-					rows: [
-						usersList,
-						{}
-					]
-				},
-				{$subview: true}
-			]
-		};
+	async loadUsers() {
+		const booksModel = BooksModel.getInstance();
+		const res = await booksModel.getAllBooks();
+		if (res.success) {
+			console.log('data', res.data);
+		}
+		else {
+			console.log('ERROR');
+		}
+	}
 
-		return ui;
+	ready() {
+		this.openDefaultPage();
+
+		const user = this.app.getService("user");
+		const userName = user.getUser()?.userName;
+
+		if (userName) {
+			this.setHeaderValue(`Hello librarian ${userName}!`);
+		}
 	}
 }

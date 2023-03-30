@@ -1,6 +1,7 @@
 import MainPage from "./mainPage";
 
 import UsersModel from "../models/users";
+import pageViewNames from "../helpers/constants/pageViewNames";
 
 // авторизуется,
 // добавляет пользователей,
@@ -13,10 +14,7 @@ export default class Admin extends MainPage {
 			app,
 			{
 				listMenu: {
-					data: [
-						{id: "users", value: "Order book", isDefaultPage: true},
-						{id: "edit", value: "Edit"}
-					],
+					data: pageViewNames.admin.views,
 					folderName: "admin"
 				}
 			},

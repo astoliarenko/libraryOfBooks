@@ -33,14 +33,17 @@ export default function User(
 		app.callEvent("app:user:login", [user]);
 
 		switch (user.roleId) { /* TODO: uncomment code */
-		// case 1:
-		// 	app.show(rolesData["1"]);
-		// 	break;
-		// case 2:
-		// 	app.show(rolesData["3"]);
-		// 	break;
+		case 1:
+			app.show(rolesData["1"]);
+			break;
+		case 2:
+			app.show(rolesData["2"]);
+			break;
+		case 3:
+			app.show(rolesData["3"]);
+			break;
 		default:
-			app.show(rolesData["2"]); /* 2 - reader for test*/
+			console.log('role Error', user.roleId);
 			break;
 		}
 	};

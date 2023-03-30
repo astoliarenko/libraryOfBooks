@@ -1,6 +1,6 @@
 import { JetView } from "webix-jet";
 
-export default class Edit extends JetView {
+export default class Books extends JetView {
 	config() {
 		return {};
 	}
