@@ -1,5 +1,6 @@
 import constants from "../../constants";
 import promisePool from "../../settings/db";
+import { ResultSetHeader } from "mysql2";
 
 import { userInfo, userInfoWithCreds } from "../interfaces/user";
 
@@ -59,8 +60,9 @@ class AuthorizationRepository {
 			INSERT INTO ${DB.USERS.NAME}
 			(${DB.USERS.COLUMNS.LOGIN}, ${DB.USERS.COLUMNS.PASSWORD}, ${DB.USERS.COLUMNS.ROLE_ID})
 			VALUES('${login}', '${password}', '${id_role}')
-		`) as [{fieldCount: number, affectedRows: 1, insertId: number, info: string, serverStatus: number, warningStatus: number}, any];
+		`) as [ResultSetHeader, any];
 
+		console.log('newUser', newUser);
 		const newUserId = newUser ? newUser[0]?.insertId : null;
 
 		if (newUserId) {
