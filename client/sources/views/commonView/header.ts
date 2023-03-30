@@ -1,11 +1,13 @@
-import {JetView} from "webix-jet";
+import {JetView, IJetApp} from "webix-jet";
 
 import constants from "../../constants";
+import headerConfig from "../../interfaces/headerConfig";
 
-export default class HeaderView extends JetView {
+const headerTemplateId = 'headerTemplate';
+export default class Header extends JetView {
 	headerTxt: string;
 
-	constructor(app, config) {
+	constructor(app: IJetApp, config: headerConfig) {
 		super(app, {});
 		this.headerTxt = config.headerName;
 	}
@@ -15,11 +17,12 @@ export default class HeaderView extends JetView {
 		const headerPadding = 13;
 
 		const headerTxt = {
-			template: this.headerTxt,
+			localId: headerTemplateId,
+			template: this.headerTxt ? this.headerTxt : 'Unknown',
 			type: "header",
 			borderless: true,
 			align: "left"
-		};
+		} as webix.ui.templateConfig;
 
 		const btnLogOut = {
 			view: "button",
@@ -39,7 +42,7 @@ export default class HeaderView extends JetView {
 						webix.message("Cancel");
 					});
 			}
-		};
+		} as webix.ui.buttonConfig;
 
 		const ui = {
 			localId: constants.IDs.HEADER,
@@ -55,12 +58,19 @@ export default class HeaderView extends JetView {
 			],
 			height: headerHeight,
 			borderless: true
-		};
+		} as webix.ui.layoutConfig;
 
 		return ui;
 	}
 
-	$$header() {
-		return this.$$(constants.IDs.HEADER);
+	public get $$header() {
+		return this.$$(constants.IDs.HEADER) as unknown as webix.ui.layout;
+	}
+
+	public setHeaderValue(value: string) {
+		const headerTemplate = this.$$(headerTemplateId) as unknown as webix.ui.template;
+
+		headerTemplate.define('template', value);
+		headerTemplate.refresh();
 	}
 }

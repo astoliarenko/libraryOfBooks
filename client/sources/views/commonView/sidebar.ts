@@ -1,13 +1,13 @@
-import {IJetApp, IJetView, JetView} from "webix-jet";
-import { IBaseView } from "webix-jet/dist/types/interfaces";
+import {IJetApp, JetView} from "webix-jet";
+import sidebarConfig from "../../interfaces/sideBarConfig";
 
 import constants from "../../constants";
 
-export default class SidebarView extends JetView {
-	data: any;
-	folderName: string;
+export default class Sidebar extends JetView {
+	private data: any;
+	private folderName: string;
 
-	constructor(app: IJetApp, config: { listMenu: any; }) {
+	constructor(app: IJetApp, config: sidebarConfig) {
 		super(app, {});
 		this.data = config.listMenu.data;
 		this.folderName = config.listMenu.folderName;
@@ -29,7 +29,7 @@ export default class SidebarView extends JetView {
 		};
 	}
 
-	$$sidebar(): webix.ui.sidebar {
+	public get $$sidebar() {
 		return this.$$(constants.IDs.SIDEBAR) as unknown as webix.ui.sidebar;
 	}
 }
