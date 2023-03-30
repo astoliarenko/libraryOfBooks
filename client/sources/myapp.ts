@@ -9,6 +9,11 @@ import AuthModel from "models/authModel";
 import BooksModel from "models/books";
 import UsersModel from "models/users";
 import { IJetApp } from "webix-jet";
+import pageViewNames from "./helpers/constants/pageViewNames";
+
+const adminPages = pageViewNames.admin;
+const librarianPages = pageViewNames.librarian;
+const readerPages = pageViewNames.reader;
 
 export default class MyApp extends JetApp {
 	constructor(config = {}) {
@@ -19,9 +24,13 @@ export default class MyApp extends JetApp {
 			debug: !PRODUCTION,
 			start: "/authorization",
 			views: {
-				orderBook: "reader.orderBook",
-				cancelOrder: "reader.cancelOrder",
-				profile: "reader.profile"
+				[adminPages.views[0].id]: `${adminPages.name}.${adminPages.views[0].id}`,
+				[adminPages.views[1].id]: `${adminPages.name}.${adminPages.views[1].id}`,
+				[librarianPages.views[0].id]: `${librarianPages.name}.${librarianPages.views[0].id}`,
+				[librarianPages.views[1].id]: `${librarianPages.name}.${librarianPages.views[1].id}`,
+				[readerPages.views[0].id]: `${readerPages.name}.${readerPages.views[0].id}`,
+				[readerPages.views[1].id]: `${readerPages.name}.${readerPages.views[1].id}`,
+				[readerPages.views[2].id]: `${readerPages.name}.${readerPages.views[2].id}`,
 			}
 		};
 
