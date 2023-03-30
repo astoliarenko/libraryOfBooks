@@ -30,6 +30,35 @@ class UsersController {
 			console.log(e);
 		}
 	}
+
+	async updateUserInfo(req, res): Promise<void>  {
+		try {
+			const reqCookies = req.headers.cookie;
+
+			if (!reqCookies) {
+				res.status(400);
+			}
+			else {
+				const token = getCookie(reqCookies, constants.TOKEN_NAMES.ACCESS_TOKEN);
+	
+				if (token) {
+					const tokenInfo = TokenService.getInfoFromToken(token);
+					const userInfo = req.body;
+
+					const [resultSetHeader, fields] = await usersRepository.updateUserInfo(userInfo, tokenInfo.id);
+					
+					if (resultSetHeader.changedRows > 0) {
+						res.status(200).send();
+					}
+				}
+				else res.status(400);
+			}
+		}
+		catch(e) {
+			console.log(e);
+			res.status(400);
+		}
+	}
 }
 
 export default new UsersController();

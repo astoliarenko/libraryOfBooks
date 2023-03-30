@@ -1,7 +1,6 @@
 import {JetView} from "webix-jet";
 
-import constants from "../../constants";
-import { wrapInScrollView } from "../../helpers/usefulFunctions";
+import { wrapInScrollView, getDate } from "../../helpers/usefulFunctions";
 import { formInputNames } from "../../helpers/constants/commonConst";
 import ProgressBar from "../../helpers/progressBar";
 import UsersModel from "../../models/users";
@@ -51,9 +50,7 @@ export default class ProfileView extends JetView {
 			click: () => {
 				webix.confirm("Cancel changes?")
 					.then(() => {
-						this.$$form.clearValidation();
-						// TODO: return prev values
-						// this.$$form.clear();
+						this.cancelChanges();
 					})
 					// @ts-ignore
 					.fail(() => {
@@ -142,13 +139,30 @@ export default class ProfileView extends JetView {
 		return phonesArr;
 	}
 
-	applyChanges() {
+	async applyChanges() {
+		this.progressBar.showProgress();
+
 		const form = this.$$form;
 
-		const isDirty = form.isDirty();
+		if (form.isDirty() && form.validate()) {
+			const values = form.getDirtyValues();
+			if (values[formNames.birthDate]) {
+				values[formNames.birthDate] = getDate(values[formNames.birthDate]);
+			}
 
-		// TODO: validate phone numbers for uniqueness
+			const model = UsersModel.getInstance();
+			const res = await model.updateUserinfo(values);
 
-		console.log('is dirty', isDirty);
+			if (res.success) {
+				form.setDirty(false);
+			}
+		}
+
+		this.progressBar.hideProgress();
+	}
+
+	cancelChanges() {
+		// const form = this.$$form;
+		// form.clearValidation();
 	}
 }

@@ -1,5 +1,5 @@
 import BaseModel from "./baseModel";
-import { getRequestOptions } from "./fetchApiService";
+import { getRequestOptions, patchRequestOptions } from "./fetchApiService";
 import IQueryResult from "../interfaces/IQueryResult";
 
 export default class UsersModel extends BaseModel {
@@ -35,6 +35,25 @@ export default class UsersModel extends BaseModel {
             }
         },
             'registration new user'
+        );
+	}
+
+    public async updateUserinfo(userInfo) {
+		return this.handleRequestResponse(
+            patchRequestOptions({path: '/users', body: userInfo}),
+            {},
+            {200: (response, result: IQueryResult) => {
+                result.success = true;
+
+                return result;
+            },
+            400: (response, result: IQueryResult) => {
+                result.success = false;
+
+                return result;
+            }
+        },
+            'user info was updated'
         );
 	}
 }

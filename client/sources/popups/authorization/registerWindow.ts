@@ -43,7 +43,6 @@ export default class RegisterWindowView extends JetView {
 			{labelWidth},
 			{
 				[formNames.phone1]: (value: string) => {
-					debugger;
 					const form = this.$$form;
 
 					if (value.length === phoneNumberLength
