@@ -1,4 +1,5 @@
 import MainPage from "./mainPage";
+import pageViewNames from "../helpers/constants/pageViewNames";
 
 import BooksModel from "models/books";
 
@@ -15,11 +16,7 @@ export default class Reader extends MainPage {
 			app,
 			{
 				listMenu: {
-					data: [
-						{id: "orderBook", value: "Order book", isDefaultPage: true},
-						{id: "cancelOrder", value: "Cancel order"},
-						{id: "profile", value: "Profile"}
-					],
+					data: pageViewNames.reader.views,
 					folderName: "reader"
 				}
 			},
