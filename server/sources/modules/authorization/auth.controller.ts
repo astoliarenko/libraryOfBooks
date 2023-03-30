@@ -1,17 +1,7 @@
-import jwt from "jsonwebtoken";
-import config from "../../config";
 import constants from "../../constants";
 import authService from "./auth.service";
 import getCookie from "../../helpers/usefulFunctions";
-
-const generateAccessToken = (id, role) => {
-	const payload = {
-		id,
-		role, /* 1 role */
-	};
-	return jwt.sign(payload, config.SECRET, { expiresIn: "24h" });
-	// {expiresIn: "24h"} - столько будет "жить" токен
-};
+import TokenService from "../token/token.service";
 
 class authController {
 	async registration(req, res): Promise<void> {
@@ -19,7 +9,7 @@ class authController {
 			const newUserData = await authService.registerUser(req.body);
 
 			if (newUserData.success) {
-				const token = generateAccessToken(
+				const token = TokenService.generateAccessToken(
 					newUserData.userId,
 					newUserData.userInfo.roleId
 				);
@@ -66,7 +56,7 @@ class authController {
 			});
 
 			if (loginRes.success) {
-				const token = generateAccessToken(
+				const token = TokenService.generateAccessToken(
 					loginRes.userInfo.userId,
 					loginRes.userInfo.roleId
 				);
@@ -130,7 +120,13 @@ class authController {
 				else res.status(400).json(false);
 			}
 		} catch (e) {
-			console.log(e);
+			if (e.isTokenError) {
+				console.log(e.message);
+			}
+			else {
+				console.log(e);
+			}
+
 			res.status(400).json(false);
 		}
 	}

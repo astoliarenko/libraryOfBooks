@@ -1,29 +1,38 @@
-import { scryptHash, key } from "../../crypto/cryptoMy";
-import response from "../../response";
+import constants from "../../constants";
 import promisePool from "../../settings/db";
 
-exports.users = (req, res) => {
-	// eslint-disable-next-line no-unused-vars
-	promisePool.query("SELECT * FROM `users`", (err, rows, fields) => {
-		// eslint-disable-next-line no-console
-		if (err) console.log(err);
-		else response(rows, res);
-	});
-};
+import { userInfo } from "../interfaces/user";
+import { ResultSetHeader } from "mysql2";
 
-exports.addNewUser = async (req, res) => {
-	// req.query.password захэшировать
-	try {
-		const hash = await scryptHash(req.query.password, key);
-		const sql = `INSERT INTO \`users\`(\`login\`, \`password\`, \`role_id\`) VALUES('${req.query.login}', '${hash}', '${req.query.role_id}')`;
-		promisePool.query(sql, (err, results) => {
-			// eslint-disable-next-line no-console
-			if (err) console.log("ошибка", err);
-			else response(results, res);
+
+const DB = constants.DB;
+
+class UsersRepository {
+	async getUserInfoById(userId: number): Promise<[userInfo[] | [], any[]]> {
+		return promisePool.query(`
+			SELECT *
+			FROM ${DB.USERS_INFO.NAME}
+			WHERE ${DB.USERS.COLUMNS.USER_ID} = '${userId}'
+		`);
+	}
+
+	async updateUserInfo(userInfo, userId: number): Promise<[ResultSetHeader, any]> {
+		const keys = Object.keys(userInfo);
+
+		let setValues = '';
+
+		keys.forEach(key => {
+			setValues += `${key} = '${userInfo[key]}',`
 		});
+
+		setValues = setValues.substring(0, setValues.length - 1);
+
+		return promisePool.query(`
+			UPDATE ${DB.USERS_INFO.NAME}
+			SET ${setValues}
+			WHERE ${DB.USERS_INFO.NAME}.${DB.USERS_INFO.COLUMNS.USER_ID} = ${userId}
+		`);
 	}
-	catch (e) {
-		// eslint-disable-next-line no-console
-		console.error(e);
-	}
-};
+}
+
+export default new UsersRepository();

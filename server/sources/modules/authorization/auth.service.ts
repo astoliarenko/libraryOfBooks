@@ -1,8 +1,7 @@
 import constants from "../../constants";
 import { scryptHash, key } from "../../crypto/cryptoMy";
 import authRepository from "./auth.repository";
-import config from "../../config";
-const jwt = require("jsonwebtoken");
+import TokenService from "../token/token.service";
 
 const DB = constants.DB;
 
@@ -140,7 +139,7 @@ class authService {
 	}
 
 	async cookieLogin(token: string) {
-		const info = jwt.verify(token, config.SECRET);
+		const info = TokenService.getInfoFromToken(token);
 		const res: {success: boolean, userInfo?: any, message?: string} = {success: false};
 
 		if (info) {

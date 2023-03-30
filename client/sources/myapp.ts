@@ -3,10 +3,11 @@ import {JetApp, EmptyRouter, HashRouter} from "webix-jet";
 import User from "./customPlugins/User";
 import "./styles/app.css";
 import "./styles/datatable.scss";
+import "./styles/common.scss";
 import fetchApiService from "models/fetchApiService";
-import { events } from "./helpers/constants/commonConst";
 import AuthModel from "models/authModel";
 import BooksModel from "models/books";
+import UsersModel from "models/users";
 import { IJetApp } from "webix-jet";
 
 export default class MyApp extends JetApp {
@@ -51,7 +52,8 @@ if (!BUILD_AS_MODULE) {
 		const setAppInstanceForModels = (app: IJetApp) => {
 			const models = [
 				AuthModel,
-				BooksModel
+				BooksModel,
+				UsersModel
 			];
 			models.forEach((model) => {
 				model.getInstance().setAppInstance(app);

@@ -1,31 +1,44 @@
 import {JetView} from "webix-jet";
 
-import constants from "../../constants";
-import userInfoColumns from "../../data/userInfoColumns";
+import { wrapInScrollView, getDate } from "../../helpers/usefulFunctions";
+import { formInputNames } from "../../helpers/constants/commonConst";
+import ProgressBar from "../../helpers/progressBar";
+import UsersModel from "../../models/users";
+import ProfileForm from "../../components/profileForm";
+
+const formNames = formInputNames.userInfo;
+const formLayoutId = 'formLayout';
 
 export default class ProfileView extends JetView {
+	private progressBar: ProgressBar;
+
+	private phoneNumbers: string[];
+
+	private formView: webix.ui.form;
+
+	private form: ProfileForm;
+
+	private unmodifiedFormValues: webix.obj;
+
 	config() {
 		const labelWidth = 120;
-		const formWidth = 800;
+		const formWidth = 400;
 
 		const applyChangesBtn = {
 			view: "button",
 			label: "Apply",
 			type: "icon",
+			css: "webix_primary",
 			icon: "wxi-check",
 			height: 50,
 			width: 100,
 			click: () => {
-				debugger;
 				webix.confirm("Apply changes?")
 					.then(() => {
 						this.applyChanges();
-						webix.message("Apply", "info");
 					})
 					// @ts-ignore
-					.fail(() => {
-						webix.message("Cancel", "error");
-					});
+					.fail(() => {});
 			}
 		};
 
@@ -39,157 +52,124 @@ export default class ProfileView extends JetView {
 			click: () => {
 				webix.confirm("Cancel changes?")
 					.then(() => {
-						webix.message("Cancel", "info");
+						this.cancelChanges();
 					})
 					// @ts-ignore
 					.fail(() => {
-						webix.message("Cancel", "error");
 					});
 			}
 		};
 
-		const form = {
-			view: "form",
-			borderless: true,
-			localId: constants.IDs.USER_INFO_FORM,
-			width: formWidth,
-			elementsConfig: {
-				margin: 10
-			},
-			elements: [
-				{
-					rows: [
-						{
-							cols: [
-								{
-									gravity: 1,
-									rows: [
-										{
-											view: "text",
-											label: "Имя",
-											name: userInfoColumns.firstName,
-											labelWidth
-										},
-										{
-											view: "text",
-											label: "Фамилия",
-											name: "secondName",
-											labelWidth
-										},
-										{
-											view: "text",
-											label: "Отчество",
-											name: "thirdName",
-											labelWidth
-										},
-										{
-											view: "text",
-											label: "Номер паспорта",
-											name: userInfoColumns.passportNumber,
-											labelWidth
-										},
-										{
-											view: "datepicker",
-											value: "",
-											name: userInfoColumns.birthDate,
-											label: "Дата рождения",
-											timepicker: false,
-											format: webix.Date.dateToStr(constants.DATE_FORMAT, false),
-											labelWidth
-										},
-										{
-											view: "textarea",
-											label: "Адрес",
-											name: userInfoColumns.address,
-											labelWidth
-										}
-									]
-								},
-								{
-									gravity: 1,
-									rows: [
-										{
-											view: "text",
-											label: "Телефон-1",
-											name: userInfoColumns.phoneNumber1,
-											labelWidth
-										},
-										{
-											view: "text",
-											label: "Телефон-2",
-											name: userInfoColumns.phoneNumber2,
-											labelWidth
-										},
-										{
-											view: "text",
-											label: "Телефон-3",
-											name: userInfoColumns.phoneNumber3,
-											labelWidth
-										},
-										{
-											view: "text",
-											label: "Телефон-4",
-											name: userInfoColumns.phoneNumber4,
-											labelWidth
-										}
-									// {
-									// 	view: "text",
-									// 	label: "Логин",
-									// 	name: "login",
-									// 	labelWidth
-									// },
-									// {
-									// 	view: "text",
-									// 	label: "Password",
-									// 	type: "password",
-									// 	name: "password",
-									// 	invalidMessage: "Ent. year between 1970 and cur.",
-									// 	labelWidth
-									// }
-									]
-								}
-							]
-						},
-						{
-							cols: [
-								applyChangesBtn,
-								{},
-								cancelChangesBtn
-							]
-						}
-					]
-				}
-			],
-			rules: {
-				firstName: webix.rules.isNotEmpty
-			}
-		};
+		this.form = new ProfileForm(
+			this.app,
+			{},
+			"update",
+			{},
+			{labelWidth},
+			{}
+		);
 
 		const ui = {
 			type: "clean",
-			cols: [
-				form, {}
+			rows: [
+				wrapInScrollView('xy', {
+					rows: [
+						{
+							localId: formLayoutId,
+							cols: [
+								this.form, {}
+							]
+						},
+						{}
+					]
+				}),
+				{
+					padding: 20,
+					cols: [
+						applyChangesBtn,
+						{},
+						cancelChangesBtn
+					]
+				}
 			]
 		};
 
 		return ui;
 	}
 
-	$$form() {
-		return this.$$(constants.IDs.USER_INFO_FORM);
+	private get $$form(): webix.ui.form {
+		return this.form.$$form;
 	}
 
-	ready() {
-		// booksCollection.waitData.then(() => {
-		// 	const id = booksCollection.getFirstId();
-
-		// 	if (id) {
-		// 		this.dt.$$datatable.select(id);
-		// 	}
-		// });
+	private get $$formLayout() {
+		return this.$$(formLayoutId) as unknown as webix.ui.layout;
 	}
 
-	applyChanges() {
-		// const form = this.$$form();
+	init() {
+		this.progressBar = new ProgressBar(this.$$formLayout);
+	}
+
+	async ready() {
+		this.progressBar.showProgress();
+
+		const model = UsersModel.getInstance();
+		const res = await model.getUserinfo();
+
+		if (res.success && res.data) {
+			const dataCopy = webix.copy(res.data);
+			if (dataCopy.birthday) {
+				dataCopy.birthday = new Date(dataCopy.birthday);
+			}
+
+			this.phoneNumbers = this.getPhooneNumbersArray(dataCopy);
+
+			this.unmodifiedFormValues = dataCopy;
+
+			this.$$form.setValues(dataCopy);
+		}
+		this.progressBar.hideProgress();
+	}
+
+	private getPhooneNumbersArray(data: {[key: string]: any}): string[] {
+		const keys = Object.keys(data);
+		const phonesArr = [];
+
+		keys.forEach(key => {
+			if (key.indexOf('phone') !== -1 && data[key]) {
+				phonesArr.push(data[key]);
+			}
+		});
+
+		return phonesArr;
+	}
+
+	private async applyChanges() {
+		this.progressBar.showProgress();
+
+		const form = this.$$form;
+
+		if (form.isDirty() && form.validate()) {
+			const values = form.getDirtyValues();
+			if (values[formNames.birthDate]) {
+				values[formNames.birthDate] = getDate(values[formNames.birthDate]);
+			}
+
+			const model = UsersModel.getInstance();
+			const res = await model.updateUserinfo(values);
+
+			if (res.success) {
+				form.setDirty(false);
+				this.unmodifiedFormValues = form.getValues();
+			}
+		}
+
+		this.progressBar.hideProgress();
+	}
+
+	private cancelChanges() {
+		const form = this.$$form;
+		form.clearValidation();
+		form.setValues(this.unmodifiedFormValues, true);
+		form.setDirty(false);
 	}
 }
